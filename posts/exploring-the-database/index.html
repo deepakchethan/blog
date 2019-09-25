@@ -1,1 +1,296 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/exploring-the-database/</title><link rel="canonical" href="https://radare.today/posts/exploring-the-database/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/exploring-the-database/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Exploring the database</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Exploring the database" />
+<meta property="og:description" content="We&rsquo;re currently trying to integrate sdb into radare2. This will greatly reduce code complexity, improve portability, and open the way to collaborative reversing.
+What is sdb ?  sdb is a simple string key/value database based on djb&rsquo;s cdb disk storage and supports JSON and arrays introspection.
+There&rsquo;s also the sdbtypes: a vala library that implements several data structures on top of an sdb or a memcache instance.
+ It has:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/exploring-the-database/" />
+<meta property="article:published_time" content="2014-05-01T17:48:58+02:00" />
+<meta property="article:modified_time" content="2014-05-01T17:48:58+02:00" />
+<meta itemprop="name" content="Exploring the database">
+<meta itemprop="description" content="We&rsquo;re currently trying to integrate sdb into radare2. This will greatly reduce code complexity, improve portability, and open the way to collaborative reversing.
+What is sdb ?  sdb is a simple string key/value database based on djb&rsquo;s cdb disk storage and supports JSON and arrays introspection.
+There&rsquo;s also the sdbtypes: a vala library that implements several data structures on top of an sdb or a memcache instance.
+ It has:">
+
+
+<meta itemprop="datePublished" content="2014-05-01T17:48:58&#43;02:00" />
+<meta itemprop="dateModified" content="2014-05-01T17:48:58&#43;02:00" />
+<meta itemprop="wordCount" content="304">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Exploring the database"/>
+<meta name="twitter:description" content="We&rsquo;re currently trying to integrate sdb into radare2. This will greatly reduce code complexity, improve portability, and open the way to collaborative reversing.
+What is sdb ?  sdb is a simple string key/value database based on djb&rsquo;s cdb disk storage and supports JSON and arrays introspection.
+There&rsquo;s also the sdbtypes: a vala library that implements several data structures on top of an sdb or a memcache instance.
+ It has:"/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Exploring the database</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2014-05-01T17:48:58&#43;02:00">May 1, 2014</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<p>We&rsquo;re currently trying to integrate <a href="https://github.com/radare/sdb">sdb</a> into radare2. This will greatly reduce code complexity, improve portability, and open the way to collaborative reversing.</p>
+
+<h2 id="what-is-sdb">What is sdb ?</h2>
+
+<blockquote>
+<p>sdb is a simple string key/value database based on djb&rsquo;s cdb disk storage and supports JSON and arrays introspection.</p>
+
+<p>There&rsquo;s also the sdbtypes: a vala library that implements several data structures on top of an sdb or a memcache instance.</p>
+</blockquote>
+
+<p>It has:</p>
+
+<ul>
+<li>namespaces (multiple sdb paths)</li>
+<li>atomic database sync (never corrupted)</li>
+<li>bindings for vala, luvit, newlisp and nodejs</li>
+<li>commandline frontend for sdb databases</li>
+<li>memcache client and server with sdb backend</li>
+<li>arrays support (syntax sugar)</li>
+<li>json parser/getter</li>
+</ul>
+
+<h3 id="usage-example">Usage example</h3>
+
+<p>Let&rsquo;s create a database!</p>
+
+<pre><code>$ sdb d hello=world
+$ sdb d hello
+world
+</code></pre>
+
+<p>Using arrays:</p>
+
+<pre><code>$ sdb - '[]list=1,2' '[0]list' '[0]list=foo' '[]list' '[+1]list=bar'
+1
+foo
+2
+foo
+fuck
+2
+</code></pre>
+
+<p>Let&rsquo;s play with json:</p>
+
+<pre><code>$ sdb d g='{&quot;foo&quot;:1,&quot;bar&quot;:{&quot;cow&quot;:3}}'
+$ sdb d g?bar.cow
+3
+$ sdb - user='{&quot;id&quot;:123}' user?id=99 user?id
+99
+</code></pre>
+
+<p>Using the command line without any disk database:</p>
+
+<pre><code>$ sdb - foo=bar foo a=3 +a -a
+bar
+4
+3
+
+$ sdb -
+foo=bar
+foo
+bar
+a=3
++a
+4
+-a
+3
+</code></pre>
+
+<p>Remove the database</p>
+
+<pre><code>$ rm -f d
+
+</code></pre>
+
+<h2 id="so-what">So what ?</h2>
+
+<p>So, you can now do this inside your radare2 sessions!</p>
+
+<p>Let&rsquo;s take a simple binary, and check what is already <em>sdbized</em>.</p>
+
+<pre><code>$ cat test.c
+int main(){
+	puts(&quot;Hello world\n&quot;);
+}
+$ gcc test.c -o test
+</code></pre>
+
+<pre><code>$ r2 -A ./test
+[0x08048320]&gt; k **
+bin
+anal
+syscall
+debug
+</code></pre>
+
+<pre><code>[0x08048320]&gt; k bin/**
+fd.6
+[0x08048320]&gt; k bin/fd.6/*
+archs=0:0:x86:32
+</code></pre>
+
+<p>The file corresponding to the sixth file descriptor is a x86_32 binary.</p>
+
+<pre><code>[0x08048320]&gt; k anal/meta/*
+meta.s.0x80484d0=12,SGVsbG8gd29ybGQ=
+[...]
+[0x08048320]&gt; ?b64- SGVsbG8gd29ybGQ=
+Hello world
+</code></pre>
+
+<p>Strings are stored encoded in <a href="https://tools.ietf.org/html/rfc4648">base64</a>.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Feel free to explore, modify, play, save, replay and trash the database.</p>
+
+<p>Also, if you want to help to integrate sdb more tightly, go check the <a href="https://github.com/radare/radare2/issues?labels=sdbtization&amp;page=1&amp;state=open">related issues</a>.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

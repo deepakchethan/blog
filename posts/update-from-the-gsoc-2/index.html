@@ -1,1 +1,185 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/update-from-the-gsoc-2/</title><link rel="canonical" href="https://radare.today/posts/update-from-the-gsoc-2/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/update-from-the-gsoc-2/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Update from the GSoC 2</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Update from the GSoC 2" />
+<meta property="og:description" content="As part of GSoC I (dkreuter) and sushant94 have been working the last three weeks on what should become the basis for a decompiler integrated with the radare2 reversing framework.
+For now it&rsquo;s a standalone program written in Rust that can read the radare2 code format ESIL. The rough process involves generating control and data flow graphs in SSA form for the input, applying simplifications on that, similar to compilers, and picking appropriate constructs in a target language to represent the input." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/update-from-the-gsoc-2/" />
+<meta property="article:published_time" content="2015-06-18T14:55:42+02:00" />
+<meta property="article:modified_time" content="2015-06-18T14:55:42+02:00" />
+<meta itemprop="name" content="Update from the GSoC 2">
+<meta itemprop="description" content="As part of GSoC I (dkreuter) and sushant94 have been working the last three weeks on what should become the basis for a decompiler integrated with the radare2 reversing framework.
+For now it&rsquo;s a standalone program written in Rust that can read the radare2 code format ESIL. The rough process involves generating control and data flow graphs in SSA form for the input, applying simplifications on that, similar to compilers, and picking appropriate constructs in a target language to represent the input.">
+
+
+<meta itemprop="datePublished" content="2015-06-18T14:55:42&#43;02:00" />
+<meta itemprop="dateModified" content="2015-06-18T14:55:42&#43;02:00" />
+<meta itemprop="wordCount" content="578">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Update from the GSoC 2"/>
+<meta name="twitter:description" content="As part of GSoC I (dkreuter) and sushant94 have been working the last three weeks on what should become the basis for a decompiler integrated with the radare2 reversing framework.
+For now it&rsquo;s a standalone program written in Rust that can read the radare2 code format ESIL. The rough process involves generating control and data flow graphs in SSA form for the input, applying simplifications on that, similar to compilers, and picking appropriate constructs in a target language to represent the input."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Update from the GSoC 2</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2015-06-18T14:55:42&#43;02:00">June 18, 2015</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>As part of GSoC I (dkreuter) and sushant94 have been working the last three weeks on what should become the basis for a decompiler integrated with the radare2 reversing framework.</p>
+
+<p>For now it&rsquo;s a standalone program written in Rust that can read the radare2 code format ESIL. The rough process involves generating control and data flow graphs in <a href="http://pp.ipd.kit.edu/firm/GraphSnippets" title="Examples for SSA graphs in an unrelated project">SSA form</a> for the input, applying simplifications on that, similar to compilers, and picking appropriate constructs in a target language to represent the input. The result will be a more intuitive representaton of the analyzed program.</p>
+
+<p>The task is hard even in theory, as a program that prints <code>4</code> could&rsquo;ve been compiled from <code>print(4)</code> or <code>print(2+2)</code>. There&rsquo;s no way to know. Right now however, we&rsquo;re just trying to get the first and simplest case (4→4) to work. But the insight, that the decompilation process is neccessarily a interpretation process, is what I try to consider in my designs.</p>
+
+<p>The alternatives to Rust we considered were OCaml and C++. None of us has written Rust or OCaml before, but seemed like many C++ skills would be transferrable to Rust (at some cost of idiomaticness). The first two weeks were full of gotchas, but now I&rsquo;m very comfortable with the language. The Rust IRC channel was very helpful in that regard.
+Rust has plenty of cool features including a very expressive typesystem (<code>X&lt;U&gt; extends Y&lt;Z&gt; + Q where Z extends X&lt;U&gt;</code>, etc.), a checker that ensures there are no double frees, aliasing non-const pointers or dangling pointers (without garbage collector), tagged unions, a nice build system unlike C++ (Apparently the C++ modules proposal didn&rsquo;t make it for C++17), type checks for metaprogramming (C++ uses duck typing instead), nicey integrated documentation generation and testing and pattern matching.
+In C++ terms, all references in Rust are <code>const restrict * const</code> and have move-semantics per default. It does make some tasks more tedious than normally. (eg. <code>swap(&amp;x[4], &amp;x[5])</code> needs workarounds to compile) But I still think that these defaults will prevent more problems that they cause.</p>
+
+<p>So while sushant94 has been working on parsing and representing the data coming from radare2 (with <a href="/update-from-the-gsoc/">good results</a> it seems), I&rsquo;ve been working on the graph data structures, which turned out to be more complicated than anticipated.
+Firstly, an SSA graph is doesn&rsquo;t only have nodes and edges, it also has one level of nesting of nodes (computations in basic-blocks) and it also has &ldquo;edge-order&rdquo; (A node representing subtraction needs to know which edge represents its first or second operand.) meaning that we couldn&rsquo;t just use a preexisting library (without adaptions). Also, the fact that Rust wants a statically determinable tree of ownership to exist clashes a bit with the requirements of a graph.
+In the end we used an existing graph library for the upper level (the basic blocks) and manually manage the lower one with instruction lists in each block. Integers are used as &ldquo;pointers&rdquo; between nodes on both levels. Another challenge were the Phi nodes which (unlike other instructions) have a variable number of operands. They have as many operands as their containing basic block has incoming control flow edges. It leads to a lot of special casing, making the code messy. I hope to find time to revisit this later (after GSoC probably).</p>
+
+<p>Once that&rsquo;s done we&rsquo;ll work on some more integration with radare2 and begin the first code that interacts with the graphs, like simplification (<code>2+x+2 → 4+x</code>) and dead code elimination (<code>if(0){/*delete this*/}</code>).</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

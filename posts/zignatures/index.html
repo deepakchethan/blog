@@ -1,1 +1,355 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/zignatures/</title><link rel="canonical" href="https://radare.today/posts/zignatures/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/zignatures/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Zignatures</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Zignatures" />
+<meta property="og:description" content="by http://twitter.com/j0sm1 modified by @Obaied
+In this blog post, we are going to show a simple example of the radare2 “zignatures” functionality. To manage “zignatures” in radare2, the only thing you have to do is type ‘z’ in the radare console. Here you can get more info on this &lsquo;z&rsquo; command:
+r2console&gt; z? |Usage: z[abcp/*-] [arg]Zignatures | z show status of zignatures | z* display all zignatures | z-prefix unload zignatures with corresponding prefix | z-* unload all zignatures | z/[ini] [end] search zignatures between these regions | za ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/zignatures/" />
+<meta property="article:published_time" content="2014-11-05T22:16:46+01:00" />
+<meta property="article:modified_time" content="2014-11-05T22:16:46+01:00" />
+<meta itemprop="name" content="Zignatures">
+<meta itemprop="description" content="by http://twitter.com/j0sm1 modified by @Obaied
+In this blog post, we are going to show a simple example of the radare2 “zignatures” functionality. To manage “zignatures” in radare2, the only thing you have to do is type ‘z’ in the radare console. Here you can get more info on this &lsquo;z&rsquo; command:
+r2console&gt; z? |Usage: z[abcp/*-] [arg]Zignatures | z show status of zignatures | z* display all zignatures | z-prefix unload zignatures with corresponding prefix | z-* unload all zignatures | z/[ini] [end] search zignatures between these regions | za .">
+
+
+<meta itemprop="datePublished" content="2014-11-05T22:16:46&#43;01:00" />
+<meta itemprop="dateModified" content="2014-11-05T22:16:46&#43;01:00" />
+<meta itemprop="wordCount" content="805">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Zignatures"/>
+<meta name="twitter:description" content="by http://twitter.com/j0sm1 modified by @Obaied
+In this blog post, we are going to show a simple example of the radare2 “zignatures” functionality. To manage “zignatures” in radare2, the only thing you have to do is type ‘z’ in the radare console. Here you can get more info on this &lsquo;z&rsquo; command:
+r2console&gt; z? |Usage: z[abcp/*-] [arg]Zignatures | z show status of zignatures | z* display all zignatures | z-prefix unload zignatures with corresponding prefix | z-* unload all zignatures | z/[ini] [end] search zignatures between these regions | za ."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Zignatures</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2014-11-05T22:16:46&#43;01:00">November 5, 2014</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>by <a href="http://twitter.com/j0sm1">http://twitter.com/j0sm1</a>
+modified by @Obaied</p>
+
+<p>In this blog post, we are going to show a simple example of the radare2 “zignatures” functionality. To manage “zignatures” in radare2, the only thing you have to do is type ‘z’ in the radare console. Here you can get more info on this &lsquo;z&rsquo; command:</p>
+
+<pre><code>r2console&gt; z?
+|Usage: z[abcp/*-] [arg]Zignatures
+| z                 show status of zignatures
+| z*                display all zignatures
+| z-prefix          unload zignatures with corresponding prefix
+| z-*               unload all zignatures
+| z/[ini] [end]     search zignatures between these regions
+| za ...            define new zignature for analysis
+| zb name bytes     define zignature for bytes
+| zc @ fcn.foo      flag signature if matching (.zc@@fcn)
+| zf name fmt       define function zignature (fast/slow, args, types)
+| zg prefix [file]  generate signature for current file
+| zh name bytes     define function header zignature
+| zp prefix         define prefix for following zignatures
+| zp                display current prefix
+| zp-               unset prefix
+| NOTE:             bytes can contain '.' (dots) to specify a binary mask
+</code></pre>
+
+<p>To show this functionality, we are going to use a simple C server. You can see its code here:</p>
+
+<pre><code>/* A simple server listening on TCP port 4001
+   from http://www.linuxhowtos.org/data/6/server.c, modified by Sam Bowne
+*/
+#include &lt;netinet/in.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+
+int copier(char *str) {
+    char buffer[1024];
+    strcpy(buffer, str);
+    return 0;
+}
+
+void error(const char *msg) {
+    perror(msg);
+    exit(1);
+}
+
+int main(int argc, char *argv[]) {
+    int sockfd, newsockfd, portno;
+    socklen_t clilen;
+    char buffer[4096], reply[5100];
+    struct sockaddr_in serv_addr, cli_addr;
+    int n;
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd &lt; 0) error(&quot;ERROR opening socket&quot;);
+    bzero((char *)&amp;serv_addr, sizeof(serv_addr));
+    portno = 4001;
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(portno);
+    if (bind(sockfd, (struct sockaddr *)&amp;serv_addr, sizeof(serv_addr)) &lt; 0)
+        error(&quot;ERROR on binding&quot;);
+    listen(sockfd, 5);
+    clilen = sizeof(cli_addr);
+    newsockfd = accept(sockfd, (struct sockaddr *)&amp;cli_addr, &amp;clilen);
+    if (newsockfd &lt; 0) error(&quot;ERROR on accept&quot;);
+    while (1) {
+        n = write(newsockfd, &quot;Welcome to my server!  Type in a message!\n&quot;, 43);
+        bzero(buffer, 4096);
+        n = read(newsockfd, buffer, 4095);
+        if (n &lt; 0) error(&quot;ERROR reading from socket&quot;);
+
+        copier(buffer);
+
+        printf(&quot;Here is the message: %s\n&quot;, buffer);
+        strcpy(reply, &quot;I got this message: &quot;);
+        strcat(reply, buffer);
+        n = write(newsockfd, reply, strlen(reply));
+        if (n &lt; 0) error(&quot;ERROR writing to socket&quot;);
+    }
+    close(newsockfd);
+    close(sockfd);
+    return 0;
+}
+</code></pre>
+
+<p>First, we are going to compile this example statically and without stripping the compiled code:</p>
+
+<pre><code>$ clang server.c -static -o server
+$ r2 server
+## We can check if the binary is stripped with this r2 command
+&gt; i~strip
+strip false
+</code></pre>
+
+<p>On the other hand, we compiled statically this same example with name server2, and this time we also executed the strip command to delete information from this binary (symbols, etc.):</p>
+
+<pre><code>$ clang server.c -static -o server2
+$ strip server2
+$ r2 server2
+</code></pre>
+
+<p>We can check if the binary is stripped with this r2 command</p>
+
+<pre><code>&gt; i~strip
+$ strip true
+</code></pre>
+
+<p>We can see that the symbols are stripped when loading the stripped binary with r2</p>
+
+<pre><code>$ r2 server2
+&gt; aa
+&gt; afl
+
+0x00401a30    1 47           entry0
+0x004020c0  101 1835         fcn.004020c0
+</code></pre>
+
+<p>Now, we create the “zignatures” from our static and unstripped binary (server). After that, we will apply this “zignatures” over the stripped binary (server2).</p>
+
+<p>We create “zignature” file with command ‘zg’ and <code>zos</code>.</p>
+
+<pre><code>$ r2 server
+&gt; aa
+&gt; zg            # Generate zignatures from the binary
+  ...
+  ...
+  ...
+  generated zignatures: 845
+&gt; zos zigs.z    # Save the zignatures to a file zigs.z
+</code></pre>
+
+<p>It’s time to open our stripped binary and watch which information is available. Load stripped binary with auto analysis:</p>
+
+<pre><code>$ r2 server2
+&gt; aa
+&gt; zo zigs.z     # Load zigs.z as a zignatures file
+&gt; z/            # Scan the binary in search for flags that correspond to the found zignatures
+</code></pre>
+
+<p>To show the zignatures loaded use the &lsquo;z&rsquo; command.</p>
+
+<pre><code>&gt; z
+Loaded 4702 signatures
+  4702 byte signatures
+  0 head signatures
+  0 func signatures
+</code></pre>
+
+<p>Now, we are able to identify the stripped binary from the generated flags. For example, let&rsquo;s see if we can identify the <code>copier()</code> method</p>
+
+<pre><code>&gt; f~sym
+  0x00401000 27 sign.bytes.sym._IO_list_resetlock_0
+  0x004010b0 16 sign.bytes.sym.__assert_fail_base.cold.0_0
+  0x00401000 27 sign.bytes.sym._init_0
+  0x004010c5 500 sign.bytes.sym.abort_0
+  0x004012e7 333 sign.bytes.sym._IO_new_fclose.cold.0_0
+  0x00401434 246 sign.bytes.sym._IO_fputs.cold.0_0
+  0x00401580 16 sign.bytes.sym.__cxa_atexit_0
+  0x00401a70 33 sign.bytes.sym.deregister_tm_clones_0
+&gt; f~copier
+  0x00401b60 127 sign.bytes.sym.copier_0
+...
+...
+...
+&gt; pd 10 @ sign.bytes.sym.copier_0
+Free fake stack
+            ;-- sign.bytes.sym.copier_0:
+            0x00401b60      55             push rbp
+            0x00401b61      4889e5         mov rbp, rsp
+            0x00401b64      4881ec200400.  sub rsp, 0x420
+            0x00401b6b      64488b042528.  mov rax, qword fs:[0x28]    ; [0x28:8]=0 ; '('
+            0x00401b74      488945f8       mov qword [rbp - 8], rax
+            0x00401b78      4889bde8fbff.  mov qword [rbp - 0x418], rdi
+            0x00401b7f      488bb5e8fbff.  mov rsi, qword [rbp - 0x418]
+            0x00401b86      488dbdf0fbff.  lea rdi, [rbp - 0x410]
+</code></pre>
+
+<p>We can trace the execution of the code and identify that the loaded zignature xrefs in the Main function.</p>
+
+<p>In this post we have seen how zignatures can help us to make the analysis of stripped binaries easier.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

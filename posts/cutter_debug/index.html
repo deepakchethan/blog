@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | GSoC 2018 Final: Debugging and Emulation Support for Cutter</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="GSoC 2018 Final: Debugging and Emulation Support for Cutter" />
+<meta property="og:description" content="Intro Hi, I&rsquo;m mandlebro and during the summer I worked on the GSOC project &ldquo;Debugging and Emulation Support for Cutter&rdquo;. The goal of this GSOC project was to integrate radare2&rsquo;s debugging and emulation capabilities in Cutter.
+You can check all my commits in the following links:
+ Cutter commits radare2 commits  Developed features During the duration of the project I both worked in radare2 and Cutter. On radare2 side I provided a json interface to existing r2 commands so that they could be well parsed on Cutter side as well as worked on some ESIL features." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/cutter_debug/" />
+<meta property="article:published_time" content="2018-08-20T11:52:13+00:00" />
+<meta property="article:modified_time" content="2018-08-20T11:52:13+00:00" />
+<meta itemprop="name" content="GSoC 2018 Final: Debugging and Emulation Support for Cutter">
+<meta itemprop="description" content="Intro Hi, I&rsquo;m mandlebro and during the summer I worked on the GSOC project &ldquo;Debugging and Emulation Support for Cutter&rdquo;. The goal of this GSOC project was to integrate radare2&rsquo;s debugging and emulation capabilities in Cutter.
+You can check all my commits in the following links:
+ Cutter commits radare2 commits  Developed features During the duration of the project I both worked in radare2 and Cutter. On radare2 side I provided a json interface to existing r2 commands so that they could be well parsed on Cutter side as well as worked on some ESIL features.">
+
+
+<meta itemprop="datePublished" content="2018-08-20T11:52:13&#43;00:00" />
+<meta itemprop="dateModified" content="2018-08-20T11:52:13&#43;00:00" />
+<meta itemprop="wordCount" content="781">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="GSoC 2018 Final: Debugging and Emulation Support for Cutter"/>
+<meta name="twitter:description" content="Intro Hi, I&rsquo;m mandlebro and during the summer I worked on the GSOC project &ldquo;Debugging and Emulation Support for Cutter&rdquo;. The goal of this GSOC project was to integrate radare2&rsquo;s debugging and emulation capabilities in Cutter.
+You can check all my commits in the following links:
+ Cutter commits radare2 commits  Developed features During the duration of the project I both worked in radare2 and Cutter. On radare2 side I provided a json interface to existing r2 commands so that they could be well parsed on Cutter side as well as worked on some ESIL features."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">GSoC 2018 Final: Debugging and Emulation Support for Cutter</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-08-20T11:52:13Z">August 20, 2018</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<h3 id="intro">Intro</h3>
+
+<p>Hi, I&rsquo;m <a href="https://github.com/fcasal">mandlebro</a> and during the summer I worked on the GSOC project &ldquo;Debugging and Emulation Support for Cutter&rdquo;. The goal of this GSOC project was to integrate <a href="https://github.com/radare/radare2">radare2</a>&rsquo;s debugging and emulation capabilities in <a href="https://github.com/radareorg/cutter">Cutter</a>.</p>
+
+<p>You can check all my commits in the following links:</p>
+
+<ul>
+<li><a href="https://github.com/radareorg/cutter/commits?author=fcasal">Cutter commits</a></li>
+<li><a href="https://github.com/radare/radare2/commits?author=fcasal">radare2 commits</a></li>
+</ul>
+
+<h2 id="developed-features">Developed features</h2>
+
+<p>During the duration of the project I both worked in radare2 and Cutter. On radare2 side I provided a json interface to existing r2 commands so that they could be well parsed on Cutter side as well as worked on some ESIL features. Here are some of the main implemented features:</p>
+
+<h3 id="multiple-panels-and-independent-seeks">Multiple panels and independent seeks</h3>
+
+<ul>
+<li><a href="https://github.com/radareorg/cutter/commit/0cea9e3287fa12a8a240834a7484c1a957f686c1">Independent seeks</a>: you can now have different widgets with different seeks. Previously, all widgets would always be in sync with each other, and with the radare2 instance running in the background.</li>
+</ul>
+
+<p><img src="/images/syncseek.gif" alt="" /></p>
+
+<ul>
+<li><a href="https://github.com/radareorg/cutter/commit/0cea9e3287fa12a8a240834a7484c1a957f686c1">Multiple widgets:</a> you can now open more than one instance of the same widget. This means that you can now look at several  functions in graph/linear mode at the same time via the menu <code>Windows</code>-&gt;<code>Add extra...</code>:</li>
+</ul>
+
+<p><img src="/images/mult_wid11.png" alt="" /></p>
+
+<p><img src="/images/mult_wid2.png" alt="" /></p>
+
+<h3 id="debug-and-emulation-actions">Debug and emulation actions</h3>
+
+<p>There are several ways to interact with the debugging/emulation engine running:</p>
+
+<ul>
+<li><strong>Debug toolbar</strong> which has buttons for all supported debugging actions. These are:
+
+<ul>
+<li>Start debug/emulation/attach to a process;</li>
+<li>Stop debugging/emulation/detach from process;</li>
+<li>Continue execution;</li>
+<li>Continue until main/syscall/call;</li>
+<li>Step into, step over, step out.</li>
+</ul></li>
+<li><strong>Context menu</strong> which allow for actions that usually depend on a offset and is accessed by <code>Right clicking</code>-&gt;<code>Debug</code>:
+
+<ul>
+<li>Add/remove breakpoint;</li>
+<li>Continue until line;</li>
+<li>Set $ProgramCounterName here;</li>
+</ul></li>
+</ul>
+
+<p><img src="/images/context_menu.png" alt="" /></p>
+
+<h3 id="debug-and-emulation-widgets">Debug and emulation widgets</h3>
+
+<p>Currently the following widgets related to debugging are available:</p>
+
+<ul>
+<li><strong>Registers widget:</strong>
+
+<ul>
+<li>allows to change a register by editing its value;</li>
+<li>hovering over a register displays the register telescoping;</li>
+<li>the registers that changed value in the last debugging action are highlighted green;</li>
+</ul></li>
+<li><strong>Stack widget:</strong> allows to view the stack, edit stack addresses and seek to addresses in the stack.</li>
+<li><strong>Breakpoint widget</strong>:
+
+<ul>
+<li>displays all current breakpoints</li>
+<li>allows to delete a single breakpoint or all breakpoints</li>
+<li>allows to toggle a breakpoint inactive;</li>
+<li>add breakpoints by providing a series of offsets separated by space.</li>
+</ul></li>
+<li><strong>Backtrace widget</strong> displays backtrace information;</li>
+<li><strong>Register references widget</strong> displays register telescoping.</li>
+<li><strong>Memory map widget</strong> displays the mapped regions and their permissions.</li>
+</ul>
+
+<p><img src="/images/debug_widgets.png" alt="" /></p>
+
+<h3 id="esil">ESIL</h3>
+
+<p>In the last leg of the project I also devoted some time to ESIL and implemented some of interesting features:</p>
+
+<ul>
+<li><a href="https://github.com/radare/radare2/commit/9a83761c6df6c483160e6c1ec43c4a50b36f64e2">Breakpoints now work in ESIL emulation:</a> previously when emulating, continuing the execution with <code>aec</code> would not stop at inserted breakpoint. Now ESIL emulation shares the same set of breakpoints as the radare2 debugger.</li>
+<li><a href="https://github.com/radare/radare2/commit/410ff31de8a5c83bf7e5195ce813077991bbe8b2">ESIL continue until call:</a> Although most debugger <code>continue until ...</code> commands were also implemented in the ESIL emulation, <code>continue until call</code> was missing and is now available with <code>aecc</code></li>
+<li><a href="https://github.com/radare/radare2/pull/10823/files">Eval variable to break emulation on invalid instructions:</a> Prior to ESIL breakpoints, when running continue command <code>aec</code> on ESIL emulation, we will most likely start trying to emulate zones of memory/instructions that are not there since they were not loaded as would happen in a real running instance of the binary. And ESIL emulation would happily sled on those invalid instructions until ^C. Now you can change this behaviour by changing the value of <code>esil.breakoninvalid</code> to true using the r2 command <code>e esil.breakoninvalid = true</code>.</li>
+</ul>
+
+<h2 id="what-is-missing">What is missing</h2>
+
+<p>Although the debugger and emulation work fine there are still some issues which probably require major work on r2 debugger and were not sucessfully finished. Both issues lie with radare2&rsquo;s debugger being developed to be used from the single threaded process which is radare2, and not a multiple threaded GUI like Cutter.</p>
+
+<p>Specifically, the problem lies in the interface with the debugee program, <code>ptrace</code>. Although it is a very powerful interface to another process, allowing to access registers, read and write the program memory, etc., this all must be done from the same tracer thread.</p>
+
+<ul>
+<li><strong>Console widget:</strong> Cutter already uses <a href="http://radare.today/posts/background_tasks/">background tasks</a> in the console widget. This however means that when we are debugging and try to inspect the program memory in the console, a new thread will do that work and run the <code>ptrace</code> command. As mentioned before, this will fail since <code>ptrace</code> only allows one thread to make calls to the debuggee. A way to solve this would be to wrap all <code>ptrace</code> calls in a way that even if different threads try calling it, always the same tracer thread will actually call <code>ptrace</code>.</li>
+<li><strong>stdin:</strong> When the debugee process asks for input, or is left running, all context is switched to that process until an input is given or ^C is sent. This means that during that time, all the Cutter widgets will freeze since they cannot update.</li>
+</ul>
+
+<h2 id="thanks">Thanks</h2>
+
+<p>I would like to sincerely thank <a href="https://github.com/xarkes">xarkes</a>, <a href="https://github.com/thestr4ng3r">Florian</a> and <a href="https://github.com/Maijin">Maijin</a> for the support during the project!</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

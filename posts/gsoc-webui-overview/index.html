@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | GSoC WebUI overview</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="GSoC WebUI overview" />
+<meta property="og:description" content="by https://twitter.com/GautierGC
+April 22th, my GSoC proposal for the radare web UI [was accepted] https://summerofcode.withgoogle.com/organizations/4965722304282624/#5484657504157696. Until today, I&rsquo;ve made the UI progressed. The purpose of this article isn&rsquo;t to close this chapter but to relate what I&rsquo;ve done and share my experience about this Google Summer of Code.
+I would like to make a short overview of what I&rsquo;ve done, a big picture of what I improved during the last months." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/gsoc-webui-overview/" />
+<meta property="article:published_time" content="2016-08-20T17:40:41+01:00" />
+<meta property="article:modified_time" content="2016-08-20T17:40:41+01:00" />
+<meta itemprop="name" content="GSoC WebUI overview">
+<meta itemprop="description" content="by https://twitter.com/GautierGC
+April 22th, my GSoC proposal for the radare web UI [was accepted] https://summerofcode.withgoogle.com/organizations/4965722304282624/#5484657504157696. Until today, I&rsquo;ve made the UI progressed. The purpose of this article isn&rsquo;t to close this chapter but to relate what I&rsquo;ve done and share my experience about this Google Summer of Code.
+I would like to make a short overview of what I&rsquo;ve done, a big picture of what I improved during the last months.">
+
+
+<meta itemprop="datePublished" content="2016-08-20T17:40:41&#43;01:00" />
+<meta itemprop="dateModified" content="2016-08-20T17:40:41&#43;01:00" />
+<meta itemprop="wordCount" content="1511">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="GSoC WebUI overview"/>
+<meta name="twitter:description" content="by https://twitter.com/GautierGC
+April 22th, my GSoC proposal for the radare web UI [was accepted] https://summerofcode.withgoogle.com/organizations/4965722304282624/#5484657504157696. Until today, I&rsquo;ve made the UI progressed. The purpose of this article isn&rsquo;t to close this chapter but to relate what I&rsquo;ve done and share my experience about this Google Summer of Code.
+I would like to make a short overview of what I&rsquo;ve done, a big picture of what I improved during the last months."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">GSoC WebUI overview</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2016-08-20T17:40:41&#43;01:00">August 20, 2016</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<p>by <a href="https://twitter.com/GautierGC">https://twitter.com/GautierGC</a></p>
+
+<p>April 22th, my GSoC proposal for the radare web UI [was accepted] <a href="https://summerofcode.withgoogle.com/organizations/4965722304282624/#5484657504157696">https://summerofcode.withgoogle.com/organizations/4965722304282624/#5484657504157696</a>. Until today, I&rsquo;ve made the UI progressed. The purpose of this article isn&rsquo;t to close this chapter but to relate what I&rsquo;ve done and share my experience about this Google Summer of Code.</p>
+
+<p>I would like to make a short overview of what I&rsquo;ve done, a big picture of what I improved during the last months. More details are available on my <a href="https://blog.gautiercolajanni.fr/gsoc/">GSoC related posts</a>. The official beginning (coding part), has started May 23th and will end August 23th.</p>
+
+<h2 id="proposal-period">Proposal period</h2>
+
+<p>When I started to take a look to this project. There were a lot of code duplication due to the lack of dependency management. As you may know in his <a href="https://github.com/radare/radare2-webui">current repository</a>, radare count 4 UIs. I&rsquo;ve managed to centralize dependencies into one place and add bower and gulp to manage external dependencies.</p>
+
+<h2 id="community-bonding-period">Community bonding period</h2>
+
+<p>During this part, I&rsquo;ve continued to improve the management of the repository through several ways. This period, about 1 month, has allowed me to normalize some items:</p>
+
+<ul>
+<li>adding last dependencies (fonts) to gulp</li>
+<li>adding code climate badge to visualize code quality</li>
+<li>cleaning the repository from unused files</li>
+<li>updating the r2pm update process (the distribution has changed)</li>
+<li>adding: README, CONTRIBUTING and LICENCES files</li>
+</ul>
+
+<p>With better dependency management, we can now easily what we are using and update them. Adding clode climate has allowed us to visualize where were the bad things and determine a regular check style for the whole repository. The new r2pm package allows us more flexibility. Finally, the files about README, CONTRIBUTING and LICENCES allows users and contributors to know a little better how does radare Web UI&rsquo;s are working.</p>
+
+<h2 id="main-part">Main part</h2>
+
+<p>From my point of view, there were no transition between the previous part the main coding part. I was into the project, ready to dive into the code base that I&rsquo;ve discovered during the previous weeks.</p>
+
+<p>End of may, I was finalizing how the UIs would be distributed and how I and every contributor would be able to make them work. We were moving from a simple makefile to a more complete dependency mangement tool who now support: external libraries, packaging (releases), development time through a watcher and a livereload plugin. Then, I&rsquo;ve started to make <em>true</em> code. In the following description, I will not talk about <em>small fixes</em> but more about new functionnalities or major rework.</p>
+
+<p>So, <strong>first task</strong>: the autocompletion module into the main search field (top right corner). I&rsquo;ve made a simple form with a dropdown to allow the user to visualize the different options. The purpose isn&rsquo;t to complete the request but to select the element where you want to go. It&rsquo;s generic enough to be bound to another field and be fed with another r2 command.</p>
+
+<p><strong>Second task</strong>, more about network error that we can encounter between r2 and the UI. We are able to indicate to the user that something has gone wrong and, at the same time, allowing the user to retry. For this part, we used a <em>callback</em> plugged into <code>lib/r2.js</code> to open a dialog. I&rsquo;ve made the choice to use the native dialog from HTML5 standard. Not well supported by every browser, it&rsquo;s currently backed up by a polyfill.</p>
+
+<p>Then, I&rsquo;ve started the <strong>third task</strong> about the presentation of big tables. Or more generic, how to present a big amount of sortable data. Here, I&rsquo;ve made the choice to use this tool: <a href="http://datatables.net/">DataTable</a>. Fit perfectly the needs: sorting and filtering data. One small problem: integration with <a href="https://getmdl.io/">MDL</a> is not perfect. Globally, the integration into the current Web UI was pretty easy with very few rework, just an adapter to bind data to this tool. All tables are currently handled by this tool.</p>
+
+<p>Next step involved the improvement of the status bar. It was my <strong>fourth task</strong>. It&rsquo;s actually pending, <em>work in progress</em>, there were several attempts to make it usable, fully integrated with the rest of the UI. It will need some rework to include all the tools we want to see into this bar and make it more context-aware.</p>
+
+<p>I&rsquo;ve got a blank period during the <strong>fifth task</strong>, I had some exams and homework to deliver to my school. I, then, pushed a very specific improvement to this current UI: the ability to split the screen without <em>iframe</em>. It allows us to keep the same context and open the possibility to a composable UI. We consider the previously called <em>panels</em> as <em>widgets</em>. There is still work to do to make it more stable and to allow future usage but it currently permits to split the screen vertically. There were several challenges due to refreshing functions defined more global than required and how <a href="https://getmdl.io/">MDL</a> was using the <em>flexbox</em> capacity.</p>
+
+<p>The <strong>sixth task</strong> was, in time invested into, the biggest. I&rsquo;ve made a new implementation the previous hexeditor without the formating help of r2. It took me nearly one month to develop this but it includes a lot of new functionnalities. A lot of them were reused into the disassembly panel (seventh task). The main sub-tasks are the following:</p>
+
+<ul>
+<li>infinite scrolling</li>
+<li>(partial) selection</li>
+<li>dedicated contextual menu</li>
+<li>flag positionnement and colorization</li>
+<li>inline edition (ascii or pairs)</li>
+<li>export selection with r2 processing</li>
+</ul>
+
+<p>I&rsquo;ve also encountered some performances issues with this panel. Fetching data is something that happen synchronously and the first processing take also some time. Since browsers aren&rsquo;t able to isolate background processing into an other thread, I&rsquo;ve made use of Web Workers to be able to make some processing in the background and let the main thread available for user&rsquo;s actions. You can read the <a href="https://blog.gautiercolajanni.fr/gsoc/r2/2016/07/15/webwokers-hexdump.html">dedicated article</a> for more details.</p>
+
+<p>For the <strong>seventh task</strong>, I&rsquo;ve made a rewriting of the disassembly panel by using the previous tools. I&rsquo;ve started to clean them and refactored some of them to be more suitable for this task. The rewriting is also important but I&rsquo;m using more content from r2 and I reused some components I&rsquo;ve developped for the hexdump editor. Currently, the disassembly panel handle:</p>
+
+<ul>
+<li>infinite scrolling based on flag/functions knowledge</li>
+<li>dedicated contextual menu</li>
+<li>apply commands and retrieve result through dialog</li>
+</ul>
+
+<p>And then, I&rsquo;ve reached the end of this GSoC. My <strong>last tasks</strong> were some issues referenced into the repository and bug fixes spotted into the panels. It includes some small improvement like highlighting the currently seeked line into disassembly or merging the header panel into the overview panel using tabs.</p>
+
+<h2 id="original-plan-deviation">Original plan deviation</h2>
+
+<p>From my point of view, I didn&rsquo;t miss the main objective of my proposal: make the UI better. But, I can&rsquo;t deny I&rsquo;m far away the initial proposal I&rsquo;ve made.</p>
+
+<p>I&rsquo;ve defined some major goals: search function, hexdump, disasm, keyboard shortcut, dual panel, graph module, interactivity through T command and scripting area. From this point of view, I haven&rsquo;t filled out all those tasks. I think I&rsquo;ve been a bit too optimistic when I&rsquo;ve placed them into my schedule. For example, I&rsquo;ve considered that the hexdump should have taken me one week, then I spent one month.</p>
+
+<p>So, if somebody would have to complete this proposal, he/she should take care of:</p>
+
+<ul>
+<li>color theme customization</li>
+<li>configuration of global keybinding</li>
+<li>improve vertical dual-panel with horizontal split (or more)</li>
+<li>incorporate and make accessible a better graph module</li>
+<li>add interactivity through T command</li>
+<li>improve the scripting area</li>
+<li>improve debugger interface (breakpoints, backtracking, etc.)</li>
+</ul>
+
+<p>It&rsquo;s not exhaustive, I think the most important here is to make something usable and used by the community more than a copy of the CLI.</p>
+
+<h2 id="future">Future</h2>
+
+<p>This experience was very interesting and I don&rsquo;t want to stop here. There is plenty of work to do to improve this UI. It will be tough to raise this UI to the command line level and I don&rsquo;t think it&rsquo;s the right way to build a great UI. We will need feedback from the community to focus on the most used features and the one that miss the most.</p>
+
+<p>In september, I&rsquo;m beginning an internship but I don&rsquo;t want to let this project alone. I will have less time to work on it but I&rsquo;m very interested to make it evolve.</p>
+
+<p>I will have the time to take a step back, visualize in which direction the UI is going, what users wants. There is also some technical challenges, how to handle the <em>big ball of mud</em>, improve modularity, reusability and continue to consider performances and usability issues.</p>
+
+<h2 id="last-words">Last words</h2>
+
+<p>The Google Summer of Code is a great experience. The radare team has really been present to help me implement what I had committed myself and had helped me to obtain the right informations to interface the UI with r2 despite my lack of knowledge about this tool.</p>
+
+<p>I would like to thanks my mentors <a href="https://twitter.com/alvaro_fe">Álvaro Felipe</a> and <a href="https://twitter.com/trufae">pancake</a> for their help during my GSoC, but also <a href="https://twitter.com/Maijin212">Maijin</a> and <a href="https://twitter.com/akochkov">Anton Kochkov</a> for their time and their knowledge about r2. It was a big opportunity for me and I hope that my work will help the r2 community. In every case, I will keep following this project and continue to contribute.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

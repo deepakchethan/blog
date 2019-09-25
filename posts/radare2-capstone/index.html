@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Radare2 and Capstone</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Radare2 and Capstone" />
+<meta property="og:description" content="Radare2 and Capstone This blogpost is the response to an observable fact: People don&rsquo;t know that Radare2 is using Capstone/Keystone/Unicorn.
+This is also a blogpost to address the numerous comparisons done online to these two different components.
+Defining the tools  Capstone is a multi-architecture disassembly framework
+ Keystone is a multi-architecture assembler framework
+ Unicorn Engine is a multi-architecture CPU emulator framework
+ Radare2 is a reverse engineering framework, it includes, in addition to other functionality: multi-architecture disassembly, assembly, and CPU emulation." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/radare2-capstone/" />
+<meta property="article:published_time" content="2017-03-09T18:30:00+01:00" />
+<meta property="article:modified_time" content="2017-03-09T18:30:00+01:00" />
+<meta itemprop="name" content="Radare2 and Capstone">
+<meta itemprop="description" content="Radare2 and Capstone This blogpost is the response to an observable fact: People don&rsquo;t know that Radare2 is using Capstone/Keystone/Unicorn.
+This is also a blogpost to address the numerous comparisons done online to these two different components.
+Defining the tools  Capstone is a multi-architecture disassembly framework
+ Keystone is a multi-architecture assembler framework
+ Unicorn Engine is a multi-architecture CPU emulator framework
+ Radare2 is a reverse engineering framework, it includes, in addition to other functionality: multi-architecture disassembly, assembly, and CPU emulation.">
+
+
+<meta itemprop="datePublished" content="2017-03-09T18:30:00&#43;01:00" />
+<meta itemprop="dateModified" content="2017-03-09T18:30:00&#43;01:00" />
+<meta itemprop="wordCount" content="574">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Radare2 and Capstone"/>
+<meta name="twitter:description" content="Radare2 and Capstone This blogpost is the response to an observable fact: People don&rsquo;t know that Radare2 is using Capstone/Keystone/Unicorn.
+This is also a blogpost to address the numerous comparisons done online to these two different components.
+Defining the tools  Capstone is a multi-architecture disassembly framework
+ Keystone is a multi-architecture assembler framework
+ Unicorn Engine is a multi-architecture CPU emulator framework
+ Radare2 is a reverse engineering framework, it includes, in addition to other functionality: multi-architecture disassembly, assembly, and CPU emulation."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Radare2 and Capstone</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2017-03-09T18:30:00&#43;01:00">March 9, 2017</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<h1 id="radare2-and-capstone">Radare2 and Capstone</h1>
+
+<p>This blogpost is the response to an observable fact: <strong>People don&rsquo;t know that Radare2 is using Capstone/Keystone/Unicorn</strong>.</p>
+
+<p>This is also a blogpost to address the numerous comparisons done online to these two different components.</p>
+
+<h1 id="defining-the-tools">Defining the tools</h1>
+
+<ul>
+<li><p><strong>Capstone</strong> is a multi-architecture disassembly framework</p></li>
+
+<li><p><strong>Keystone</strong> is a multi-architecture assembler framework</p></li>
+
+<li><p><strong>Unicorn Engine</strong> is a multi-architecture CPU emulator framework</p></li>
+
+<li><p><strong>Radare2</strong> is a reverse engineering framework, it includes, in addition to other functionality: multi-architecture disassembly, assembly, and CPU emulation.</p></li>
+</ul>
+
+<p>Radare2 is using <strong>Capstone</strong> <em>as its default disassembler since <strong>2014</strong></em> for arm, m68k, MIPS, PowerPC, SPARC, X86 and XCore.</p>
+
+<p><strong>Radare2</strong> also allows you to use other disassembly engines such as udis for x86 or gnu implementation for arm, MIPS, PowerPC and SPARC.</p>
+
+<p><strong>Radare2</strong> also contains many other architectures that are not supported by Capstone, such as 6502, VAX, RISC-V&hellip; (Full list can be obtained using <code>rasm2 -L</code>)</p>
+
+<p>You can use <strong>Keystone</strong> within <strong>Radare2</strong> by installing the Keystone plugin via r2pm, the radare2 package manager.</p>
+
+<p><code>$&gt; r2pm -i keystone-lib &amp;&amp; r2pm -i keystone</code></p>
+
+<p>Similarly you can use Unicorn Engine within Radare2 by installing the Unicorn Engine plugin via r2pm:</p>
+
+<p><code>$&gt; r2pm -i unicorn-lib &amp;&amp; r2pm -i unicorn</code></p>
+
+<p><img src="https://pbs.twimg.com/media/CNVxHanWIAA5WeL.png" alt="unicorn Engine in radare2" /></p>
+
+<p>Both of these integrations were available prior to the public release of Keystone and Unicorn Engine.</p>
+
+<h2 id="why-the-current-comparisons-between-radare2-and-capstone-are-idiotic">Why the current comparisons between Radare2 and Capstone are idiotic</h2>
+
+<p>So now here are two questions you should ask yourself:</p>
+
+<ul>
+<li>Would you compare a set of wheels with a car ?</li>
+<li>Would you compare a library with the software that uses it ?</li>
+</ul>
+
+<p>This is how these dumb comparisons would actually look like given all those elements:</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Radare2</th>
+<th>Capstone</th>
+<th>Keystone</th>
+<th>Unicorn-Engine</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Multi-architecture disassembly framework</td>
+<td>YES</td>
+<td>YES</td>
+<td>NO</td>
+<td>NO</td>
+</tr>
+
+<tr>
+<td>Multi-architecture assembler framework</td>
+<td>YES</td>
+<td>NO</td>
+<td>YES</td>
+<td>NO</td>
+</tr>
+
+<tr>
+<td>multi-architecture CPU emulator framework</td>
+<td>YES</td>
+<td>NO</td>
+<td>NO</td>
+<td>YES</td>
+</tr>
+</tbody>
+</table>
+
+<p>As one can notice, this has zero value, and therefore should not be done</p>
+
+<h2 id="api">API</h2>
+
+<p>One of the comparisons that is often done is between the APIs. Without referring to the previous paragraph.</p>
+
+<p>For this example I am going to show the Capstone API vs R_asm as already presented <a href="http://radare.today/posts/rasm/">here</a> vs R2pipe which is the recommended way to script radare2.</p>
+
+<h3 id="r-asm">R_ASM</h3>
+
+<h4 id="installation">Installation</h4>
+
+<p><code>r2pm -i r2api-python</code> (Other language available see <a href="https://github.com/radare/radare2-bindings">here</a>)</p>
+
+<h4 id="usage">Usage</h4>
+
+<pre><code class="language-python">from r2.r_asm import *
+
+def ass(a, arch, op):
+    print &quot;OPCODE: %s&quot;%op
+    a.use (arch)
+    print &quot;ARCH: %s&quot;%arch
+    code = a.massemble (op)
+    if code is None:
+        print &quot;HEX: Cannot assemble opcode&quot;
+    else:
+        print &quot;HEX: %s&quot;%code.buf_hex
+
+a = RAsm()
+ass (a, 'x86.olly', 'mov eax, 33')
+ass (a, 'java', 'bipush 33')
+</code></pre>
+
+<h3 id="r2pipe">R2Pipe</h3>
+
+<h4 id="installation-1">Installation</h4>
+
+<p><code>r2pm -i r2pipe-py</code> or <code>pip install r2pipe</code> (Other language available see <a href="https://github.com/radare/radare2-r2pipe">here</a>)</p>
+
+<h4 id="usage-1">Usage</h4>
+
+<pre><code class="language-python">import r2pipe
+
+r2 = r2pipe.open(&quot;-&quot;)
+r2.cmd(&quot;e asm.arch=x86&quot;)
+r2.cmd(&quot;e asm.bits=64&quot;)
+nopHex = r2.cmd(&quot;pa nop&quot;)
+nopCode = r2.cmd(&quot;pad 90&quot;)
+r2.quit()
+</code></pre>
+
+<h3 id="capstone-api">Capstone API</h3>
+
+<h4 id="installation-2">Installation</h4>
+
+<p><code>pip install capstone</code></p>
+
+<p>(you will need keystone for assembly too)</p>
+
+<h4 id="usage-2">Usage</h4>
+
+<pre><code class="language-python">from capstone import *
+
+CODE = b&quot;\x55\x48\x8b\x05\xb8\x13\x00\x00&quot;
+
+md = Cs(CS_ARCH_X86, CS_MODE_64)
+for i in md.disasm(CODE, 0x1000):
+     print(&quot;%s\t%s&quot; %(i.mnemonic, i.op_str))
+</code></pre>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Comparisons between radare2 and Capstone do not make sense.</p>
+
+<p><strong>So stop doing it.</strong></p>
+
+<p>Secondly why use radare2 for analysis and Capstone API for scripting when you can use radare2 for both tasks without any effort.</p>
+
+<p>The APIs, though different, produce the same results as expected. Radare2 will have the advantage though, as additional functionalities such as analysis (cross-references) and debugging for example can be applied to the data coming from Capstone. Additionally, radare2 also provides an embedded disassembler.</p>
+
+<p>It makes more sense to compare radare2&rsquo;s ESIL engine to the Unicorn Engine, or Udis to Capstone.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

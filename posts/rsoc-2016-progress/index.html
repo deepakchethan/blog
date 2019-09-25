@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | RSoC 2016 progress</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="RSoC 2016 progress" />
+<meta property="og:description" content="This year we&rsquo;re hosting our own Radare Summer of Code, again!
+This is why we have selected 4 students:
+ Aneesh Dogra (FAT PE binaries) Alexandru Razvan Caciulescu (ROP generator) Rakholia Jenish (Kernel level interfaces) Pankaj Kataria (SROP and COOP generators)  FAT PE binaries At first, Aneesh Dogra adding the support of FAT PE binaries: those PEs can contain multiple programs inside, like 16bit MZ stub, both native and MSIL/CIL(." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/rsoc-2016-progress/" />
+<meta property="article:published_time" content="2016-08-02T13:00:10+02:00" />
+<meta property="article:modified_time" content="2016-08-02T13:00:10+02:00" />
+<meta itemprop="name" content="RSoC 2016 progress">
+<meta itemprop="description" content="This year we&rsquo;re hosting our own Radare Summer of Code, again!
+This is why we have selected 4 students:
+ Aneesh Dogra (FAT PE binaries) Alexandru Razvan Caciulescu (ROP generator) Rakholia Jenish (Kernel level interfaces) Pankaj Kataria (SROP and COOP generators)  FAT PE binaries At first, Aneesh Dogra adding the support of FAT PE binaries: those PEs can contain multiple programs inside, like 16bit MZ stub, both native and MSIL/CIL(.">
+
+
+<meta itemprop="datePublished" content="2016-08-02T13:00:10&#43;02:00" />
+<meta itemprop="dateModified" content="2016-08-02T13:00:10&#43;02:00" />
+<meta itemprop="wordCount" content="1004">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="RSoC 2016 progress"/>
+<meta name="twitter:description" content="This year we&rsquo;re hosting our own Radare Summer of Code, again!
+This is why we have selected 4 students:
+ Aneesh Dogra (FAT PE binaries) Alexandru Razvan Caciulescu (ROP generator) Rakholia Jenish (Kernel level interfaces) Pankaj Kataria (SROP and COOP generators)  FAT PE binaries At first, Aneesh Dogra adding the support of FAT PE binaries: those PEs can contain multiple programs inside, like 16bit MZ stub, both native and MSIL/CIL(."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">RSoC 2016 progress</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2016-08-02T13:00:10&#43;02:00">August 2, 2016</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<p>This year we&rsquo;re hosting our own <strong>Radare Summer of Code</strong>, again!</p>
+
+<p>This is why we have selected 4 students:</p>
+
+<ul>
+<li>Aneesh Dogra (FAT PE binaries)</li>
+<li>Alexandru Razvan Caciulescu (ROP generator)</li>
+<li>Rakholia Jenish (Kernel level interfaces)</li>
+<li>Pankaj Kataria (SROP and COOP generators)</li>
+</ul>
+
+<h3 id="fat-pe-binaries">FAT PE binaries</h3>
+
+<p>At first, Aneesh Dogra adding the support of FAT PE binaries: those PEs can contain multiple programs inside, like 16bit MZ stub, both native and MSIL/CIL(.NET) code. This task also includes adding support for .NET in RBin, to be able to list the symbols, get the entrypoint, code metadata, etc.</p>
+
+<h4 id="progress-so-far">Progress so far</h4>
+
+<p><em>r2</em> used to crash when loading a fat binary with a lot of sub-bins. Every sub-binary was loaded on RAM at all times and it costed a lot of memory and computation. We tested it using a dyld cache (around 650mb in size) with around 950 libs, and it costed more than 16GBs of ram to load that binary. Now, we can load the same in around 1.2 GBs. We did this by caching the libraries in sdb while parsing the fatbin and then only loading them on ram if we require. Currently I am working on a PE RBinXtr plugin, that would allow PE files to be loaded as fat binaries, hence allowing us to play around with its sub-bins (W16, W32, .NET) in r2.</p>
+
+<h3 id="kernel-support-for-r2">Kernel support for r2</h3>
+
+<p>Also, Rakholiya Jenish will work on the integration of radare2 with kernel-level interfaces. This includes multiple fixes/features such as:</p>
+
+<ul>
+<li>Adding support for huge elf files such as Linux kernels with debug information</li>
+<li>Ability to read and parse <code>/proc/kcore</code> files</li>
+<li>Linux and Windows kernel drivers to read/write in kernel address space</li>
+<li>Import structures from dwarf and make them available for <code>pf</code></li>
+<li>Multiple scripts to extract information from kernel structures</li>
+</ul>
+
+<h4 id="progress-so-far-1">Progress so far</h4>
+
+<p><em>r2</em> can now also support working with files larger than RAM. If memory allocation fails while loading a large file into memory, r2 will instead allocate a buffer (128MB as default size) and analysis will be done by re-reading the buffer everytime the physical address is not in the buffer range. The buffer size can also be manually defined using the <code>R_IO_MAX_ALLOC</code> environment variable. The test suite cannot test this at the moment, so a future direction could be to look into integrating the manual tests that I&rsquo;m doing into the test suite.</p>
+
+<p>Currently, I am working on extracting structures in different formats from <code>.dwarf_info</code> section so that they can be made available for use with <code>pf</code>. We currently plan to use external library <code>libdwarf</code>.</p>
+
+<h3 id="rop-generator">ROP generator</h3>
+
+<p>Then, Alexandru Razvan Caciulescu working on the ROPchain generator, based on ragg2. The new tool (or just improved ragg2) will provide parity to well known ROPgadget tool. Also improving the current ROP search algorithms, for example caching rop gadgets in SDB, for quicker retrieval. Something like this syntax is going to be used:</p>
+
+<pre><code>register reg1 = 0; 
+register reg2 = whatever;
+register reg3 = reg1 + reg2;
+system(echo reg3);
+</code></pre>
+
+<h4 id="progress-so-far-2">Progress so far</h4>
+
+<p>For the midterm I focused on the gadget caching in SDB for faster retrieval + lookup while also trying to classify them based on a semantic analysis.</p>
+
+<p>From now on all the <code>/R</code> commands which previously only searched and displayed gadgets also cache them in the SDB. We decided to store them as <start_addr>:<length> For querying them we have the new commands:</p>
+
+<ul>
+<li><code>/Rk</code> display all gadgets
+* <code>/Rkj</code> display in JSON format
+* <code>/Rkq</code> display only the offsets
+
+The <code>Ps</code> and <code>Po</code> commands have also been enhanced to save/load the ROP SDB into the projects.
+
+Currently I am working on the semantic classification of gadgets. Each gadget will be classified in on of the categories presented here: <a href="https://hackmd.io/s/By-S2GLu">https://hackmd.io/s/By-S2GLu</a>
+For this task the radare framework is ideal because we can emulate each assembly instruction and see which REGs, FLAGs and MEM addr are accessed and how they are changed, thus providing all the information required for assigning a class to each gadget. The main challenge for this was actually understanding how this works and how radare handles all of this in the background so I can adapt it to my specific needs for this task.
+
+
+### SROP/COOP generator
+
+Pankaj Kataria will add the ability to generate SROP and COOP (Counterfeit Object Oriented Programming) sequences to the same tool, sharing the code/infrastructure with ROP generation code.
+
+Counterfeit Object-oriented programming is an advanced and fairly new technique which even by hand is hard and error prone process so, more importance is given on the design for the tool automating this technique is make is less painfull to use. Currently i am implementing Searcher for finding vfgadgets (virtual functions) used by the input binary.
+
+##### Situtation
+
+The problem of finding all the virtual function boils down to find all vtable&rsquo;s being used in a binary. But as the exact location of the all the vtable&rsquo;s is not known so, to solve this I am using an algorithm made by combination techniques described in this and this paper. The abstract algorithm composed is described as follows :<br />
+
+* Start by analyzing the data segment and scanning each location in it.
+* If current location is referenced from a code segment and its value  is a pointer to a function, then mark it as a start of vtable.
+* Else continue to search.
+* Other elements of the virtual table must be must be unreferenced pointers to functions, so finding the size of virtual table is straightforward as Vtable ends with the first locations that is either referenced from the program code, orht is not a pointer to a function.
+
+Once the virtual function table is identified Runtime Type information(RTTI) can be recovered as well because in most of Application Binary Interface pointer to RTTI structure of a class always precedes the corresponding virtual table. Later using RTTI polymorphic class hierarchies is reconstructed exactly as it was in the source C++ program.
+
+&mdash;&mdash;&mdash;
+
+Please, help us to pay the proper amount of money to our students by supporting our crowdfunding campaign at IndieGoGo: <a href="https://igg.me/at/rsoc2016">https://igg.me/at/rsoc2016</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

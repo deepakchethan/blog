@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Android Crackme and Structure offset propagation</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Android Crackme and Structure offset propagation" />
+<meta property="og:description" content="Today we will look into the recently introduced feature in r2 - structure offset propagation.
+We will use it to solve a crackme based on reversing an Android JNI (Java Native Interface) library.Beware that the feature is still WIP and being constantly improved.
+This challenge is originally from NDH2012-wargame, so we are provided with an NDH.apk file, now after decompiling and using JD-GUI to browse through the code we can find some interesting functions :" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/crackme_with_tl/" />
+<meta property="article:published_time" content="2018-06-16T01:45:16+02:00" />
+<meta property="article:modified_time" content="2018-06-16T01:45:16+02:00" />
+<meta itemprop="name" content="Android Crackme and Structure offset propagation">
+<meta itemprop="description" content="Today we will look into the recently introduced feature in r2 - structure offset propagation.
+We will use it to solve a crackme based on reversing an Android JNI (Java Native Interface) library.Beware that the feature is still WIP and being constantly improved.
+This challenge is originally from NDH2012-wargame, so we are provided with an NDH.apk file, now after decompiling and using JD-GUI to browse through the code we can find some interesting functions :">
+
+
+<meta itemprop="datePublished" content="2018-06-16T01:45:16&#43;02:00" />
+<meta itemprop="dateModified" content="2018-06-16T01:45:16&#43;02:00" />
+<meta itemprop="wordCount" content="814">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android Crackme and Structure offset propagation"/>
+<meta name="twitter:description" content="Today we will look into the recently introduced feature in r2 - structure offset propagation.
+We will use it to solve a crackme based on reversing an Android JNI (Java Native Interface) library.Beware that the feature is still WIP and being constantly improved.
+This challenge is originally from NDH2012-wargame, so we are provided with an NDH.apk file, now after decompiling and using JD-GUI to browse through the code we can find some interesting functions :"/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Android Crackme and Structure offset propagation</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-06-16T01:45:16&#43;02:00">June 16, 2018</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Today we will look into the recently introduced feature in r2 - structure offset propagation.</p>
+
+<p>We will use it to solve a crackme based on reversing an Android JNI (Java Native Interface) library.Beware that the feature is still WIP and being constantly improved.</p>
+
+<p>This challenge is originally from NDH2012-wargame, so we are provided with an <a href="https://github.com/sivaramaaa/CTF_repo/blob/master/NDH2k12/NDH.apk">NDH.apk</a> file, now after decompiling and using JD-GUI to browse through the code we can find some interesting functions :</p>
+
+<pre><code class="language-java">// Java source file
+static
+{
+     System.loadLibrary(&quot;verifyPass&quot;);
+}
+NDHActivity localNDHActivity = NDHActivity.this;
+String str1 = this.val$tv2.getText().toString();
+String str2 = localNDHActivity.print(str1);
+</code></pre>
+
+<p>After reading through the code we can find that the validation routine is contained in a <a href="https://github.com/sivaramaaa/CTF_repo/blob/master/NDH2k12/libverifyPass.so">JNI lib</a> file.</p>
+
+<pre><code>$ file libverifyPass.so
+libverifyPass.so: ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, stripped
+</code></pre>
+
+<p>So let&rsquo;s start by opening it in <del>IDA</del> r2 -</p>
+
+<pre><code>$ r2 ./libverifyPass.so
+[0x00000f50]&gt; aaa
+...
+[0x00000f50]&gt; afl
+0x00000f38    1 12           sym.imp.__gnu_Unwind_Find_exidx
+0x00000f44    1 12           sym.imp.difftime
+0x00000f50    1 12           entry0
+0x00000f60   15 500          sym.Java_com_app_ndh_NDHActivity_print
+...
+</code></pre>
+
+<p>We could easily spot the &ldquo;sym.(..).print&rdquo; function that was called from the java source file</p>
+
+<pre><code>[0x00000f60]&gt; pdf
+|   sym.Java_com_app_ndh_NDHActivity_print ();
+| ; var int local_4h @ sp+0x4
+  ....
+| 0x00000f60      30b5     push {r4, r5, lr}
+| 0x00000f62      cdb0     sub sp, 0x134
+| 0x00000f64      7e4c     ldr r4, [0x00001160]
+| 0x00000f66      7c44     add r4, pc
+| 0x00000f68      0390     str r0, [sp + local_ch] //
+| 0x00000f6a      0291     str r1, [sp + local_8h] // Arguments stored in stack
+| 0x00000f6c      0192     str r2, [sp + local_4h] //
+  ....
+| 0x00000f76      039b     ldr r3, [sp + local_ch]
+| 0x00000f78      1a68     ldr r2, [r3] // JNIEnv struct loaded
+| 0x00000f7a      a923     movs r3, 0xa9
+| 0x00000f7c      9b00     lsls r3, r3, 2
+| 0x00000f7e      d358     ldr r3, [r2, r3]
+ ....
+| 0x00000f8a      9847     blx r3
+</code></pre>
+
+<p>We could see that one of the arguments passed to this print function is a <strong>JNIEnv</strong> struct pointer which contains info about many callback functions (For detailed explaination about JNI , take a look at this <a href="https://en.wikipedia.org/wiki/Java_Native_Interface">wiki</a>)</p>
+
+<p>This program uses such type of call 3 times, with the indexes 0x2A4, 0x290 and 0x29C.</p>
+
+<p>To retreive the names of corresponding functions, we can directly use <a href="https://github.com/sivaramaaa/CTF_repo/blob/master/NDH2k12/jniapi.h">jni.h</a> file or this <a href="https://docs.oracle.com/javase/1.5.0/docs/guide/jni/spec/functions.html#wp23720">doc</a> which contains indexes in JNIEnv interface function table :</p>
+
+<pre><code class="language-cc">0x24A / 4 = 169 --&gt; const jbyte* GetStringUTFChars(JNIEnv *env, jstring string, jboolean *isCopy);
+0x290 / 4 = 164 --&gt; jsize GetStringLength(JNIEnv *env, jstring string);
+0x29C / 4 = 167 --&gt; jstring NewStringUTF(JNIEnv *env, const char *bytes);
+</code></pre>
+
+<p>As you can see it&rsquo;s a bit painful process, this is where our struct offset propagation comes into picture!</p>
+
+<pre><code>[0x00000f60]&gt; to ./jni.h (load the header file)
+[0x00000f60]&gt; ts 
+_JavaVM
+JNIInvokeInterface
+JNINativeInterface
+_JNIEnv
+</code></pre>
+
+<p>You can either use ESIL emulation or debugging to find the address of JNIEnv struct.
+For sake of simplicity, we will use the address that is mapped to our SP (Stack Pointer), which is <code>0x00000000</code> as we see from the output below:</p>
+
+<pre><code>:&gt; px $w @ sp
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x00000000  7f45 4c46                                .ELF
+</code></pre>
+
+<p>As we saw from the <code>pdf</code> output above, the stack pointer (SP) is being used as the base pointer with different offsets from local variables. This means that the base of our JNIEnv structure is whatever the value of SP at the time.</p>
+
+<pre><code>:&gt; px $w @ [sp]
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x464c457f  ffff ffff                                ....
+</code></pre>
+
+<p>From what we can see here, <code>[SP]</code> here is <code>0x464c457f</code>. This actually represents the first few bits of an ELF binary&rsquo;s header. Now link both the struct and address using tl command and watch the magic happen :)</p>
+
+<pre><code>[0x00000f60]&gt; tl JNINativeInterface = 0x464c457f
+[0x00000f60]&gt; pdf
+...
+| 0x00000f7c      9b00   lsls r3, r3, 2
+| 0x00000f7e      d358   ldr r3, [r2, r3] ; JNINativeInterface.GetStringUTFChars
+| 0x00000f84      081c   adds r0, r1, 0
+| 0x00000f86      111c   adds r1, r2, 0
+| 0x00000f88      0022   movs r2, 0
+| 0x00000f8a      9847   blx r3
+...
+| 0x0000100e      d358   ldr r3, [r2, r3] ; JNINativeInterface.GetStringLength
+| 0x00001010      0399   ldr r1, [sp + local_ch]
+| 0x00001012      019a   ldr r2, [sp + local_4h]
+| 0x00001014      081c   adds r0, r1, 0
+| 0x00001016      111c   adds r1, r2, 0
+| 0x00001018      9847   blx r3
+....
+| 0x00001110      a723   movs r3, 0xa7
+| 0x00001112      9b00   lsls r3, r3, 2
+| 0x00001114      d258   ldr r2, [r2, r3] ; JNINativeInterface.NewStringUTF
+
+</code></pre>
+
+<p>Finally moving on to the solution of this challenge, we can see that there are some string length checks happening, and at last two strings are loaded from .rodata section which is xored together to print the flag</p>
+
+<pre><code class="language-python">&gt;&gt; a = [0x52,0x1A,0x09,0x7B ...]
+&gt;&gt; b = [0x5C,0x20,0x72,0x10 ...]
+&gt;&gt; &quot;&quot;.join( [ chr(a[i] ^ b[i]) for i in range(len(a)) ] )
+'Radare2_is_great' (obviously not the flag, try it on ur own to get it :P)
+</code></pre>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

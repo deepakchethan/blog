@@ -1,1 +1,297 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/interview-of-ret2libc/</title><link rel="canonical" href="https://radare.today/posts/interview-of-ret2libc/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/interview-of-ret2libc/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Interview of ret2libc</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Interview of ret2libc" />
+<meta property="og:description" content="Almost one month since our last article, time flees. This article is an interview of a new contributor, that greatly enhanced one of the most visually impressive feature of radare2, the one that our propaganda department contributors loves to show at conferences!
+ Who are you ?   Hi, I&rsquo;m ret2libc, I was an IDA addicted and this is my 10th day that I don&rsquo;t use IDA.
+  Hi ret2libc   Just joking, I still use IDA, but I&rsquo;d really love to switch in the future, when r2 will be good enough." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/interview-of-ret2libc/" />
+<meta property="article:published_time" content="2015-07-16T11:53:57+02:00" />
+<meta property="article:modified_time" content="2015-07-16T11:53:57+02:00" />
+<meta itemprop="name" content="Interview of ret2libc">
+<meta itemprop="description" content="Almost one month since our last article, time flees. This article is an interview of a new contributor, that greatly enhanced one of the most visually impressive feature of radare2, the one that our propaganda department contributors loves to show at conferences!
+ Who are you ?   Hi, I&rsquo;m ret2libc, I was an IDA addicted and this is my 10th day that I don&rsquo;t use IDA.
+  Hi ret2libc   Just joking, I still use IDA, but I&rsquo;d really love to switch in the future, when r2 will be good enough.">
+
+
+<meta itemprop="datePublished" content="2015-07-16T11:53:57&#43;02:00" />
+<meta itemprop="dateModified" content="2015-07-16T11:53:57&#43;02:00" />
+<meta itemprop="wordCount" content="724">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Interview of ret2libc"/>
+<meta name="twitter:description" content="Almost one month since our last article, time flees. This article is an interview of a new contributor, that greatly enhanced one of the most visually impressive feature of radare2, the one that our propaganda department contributors loves to show at conferences!
+ Who are you ?   Hi, I&rsquo;m ret2libc, I was an IDA addicted and this is my 10th day that I don&rsquo;t use IDA.
+  Hi ret2libc   Just joking, I still use IDA, but I&rsquo;d really love to switch in the future, when r2 will be good enough."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Interview of ret2libc</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2015-07-16T11:53:57&#43;02:00">July 16, 2015</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Almost one month since our last article, time flees. This article is an interview of a <em>new</em> contributor, that greatly enhanced one of the most visually impressive feature of radare2, the one that our <s>propaganda department</s> contributors loves to show at conferences!</p>
+
+<ul>
+<li>Who are you ?</li>
+</ul>
+
+<blockquote>
+<p>Hi, I&rsquo;m <a href="https://github.com/ret2libc">ret2libc</a>, I was an IDA addicted and this is my 10<sup>th</sup> day that I don&rsquo;t use IDA.</p>
+</blockquote>
+
+<ul>
+<li>Hi ret2libc</li>
+</ul>
+
+<blockquote>
+<p>Just joking, I still use IDA, but I&rsquo;d really love to switch in the future, when r2 will be good enough. I am a Computer Science student, I like security related stuff, RE, malwares and&hellip; CTFs!</p>
+</blockquote>
+
+<ul>
+<li>Why contributing to radare2 ?</li>
+</ul>
+
+<blockquote>
+<p>Just use IDA instead, like everyone else.</p>
+
+<p>Well, there are just plenty of bugs to fix and it&rsquo;s really fun. r2 is not perfect (yet), but it&rsquo;s an opportunity to be involved in a very good project and full of <s>anal</s> nice people. Also, I was really annoyed by the fact that I have to switch to Windows or a Windows VM everytime I just want to analyze a binary, even a simple one.</p>
+
+<p>Instead r2 works almost everywhere, I just need my terminal. It&rsquo;s free, it&rsquo;s cool and it can be a good enough tool to work with binaries from some CTF.</p>
+
+<p>So, let&rsquo;s try it, but&hellip; wait, there&rsquo;s only plain disassembly here, where is my graph?? Ok, <code>VV</code> and, well, I&rsquo;ve found what I wanted to improve ;)</p>
+</blockquote>
+
+<ul>
+<li>You have fixed a big pile of bugs regarding graphs, that&rsquo;s pretty impressive. Do you have a strong background in programming/maths ?</li>
+</ul>
+
+<blockquote>
+<p>Let&rsquo;s say I have a background in programming/maths. As I mentioned, I&rsquo;m a Computer Science student.</p>
+</blockquote>
+
+<ul>
+<li>Why the graph?</li>
+</ul>
+
+<blockquote>
+<p>I think it&rsquo;s one of the fundamental feature a disassembler should have. It makes you understand at a glance what&rsquo;s going on in a program and many times it&rsquo;s the only thing I need from IDA.</p>
+</blockquote>
+
+<ul>
+<li>What are you currently implementing ? <a href="https://twitter.com/r2gif/status/621291945365667840">Someone</a> told me about colours in graphs.</li>
+</ul>
+
+<blockquote>
+<p>I&rsquo;ve just finished implementing an algorithm to have a better layout for the nodes of the ASCII-Art graph, so that you won&rsquo;t have anymore (at least, you shouldn&rsquo;t) overlapping nodes or nodes placed in really wrong positions. Don&rsquo;t expect IDA&rsquo;s graph, but it&rsquo;s already something ;)</p>
+
+<p>Since, at the moment, you can only see one function in the ASCII-Art graph, currently I&rsquo;m implementing a way to move between called functions and go back and forth between them, without having to leave the graph mode. Something like what you get in Visual Mode with <code>[0-9]</code> shortcuts (<a href="https://github.com/radare/radare2/issues/2907">#2907</a>).</p>
+
+<p>For the colours in graph, I think you will have to wait a little bit. In the meantime, if you feel brave you can start to use &lsquo;VV!&rsquo;, but don&rsquo;t say I didn&rsquo;t warn you.</p>
+</blockquote>
+
+<ul>
+<li>What is the plan for the next months ? Are you going to continue to work on r2 ?</li>
+</ul>
+
+<blockquote>
+<p>Of course I will continue contributing to r2, in my spare time! I&rsquo;m planning to focus on graph, as I&rsquo;ve done lately. In particular I think you will see:</p>
+
+<ul>
+<li><a href="https://github.com/radare/radare2/issues/2907">issue #2907</a> fixed: move between called functions with [0-9] keys</li>
+<li>enhancement in the edges layout. They are a real mess at the moment and for a good enough graph it&rsquo;s one of the fundamental thing that has to be fixed.</li>
+<li>mouse support for node selection</li>
+<li>last, and also least <em>:P</em>, you will see colored disassembly in the graph, unless someone else want to implement it before me (you are welcome!!)</li>
+<li>a lot of other cool stuff, but that&rsquo;s another story and everything else really depends on having a good and strong starting point.</li>
+</ul>
+</blockquote>
+
+<ul>
+<li>What about, a GUI ?</li>
+</ul>
+
+<blockquote>
+<p>What? GUI? Pff, we just have the terminal :)</p>
+
+<p>Really, I&rsquo;d really like to see a cool GUI for r2, but don&rsquo;t count on me.</p>
+</blockquote>
+
+<ul>
+<li>Most hated/lover feature of r2 ?</li>
+</ul>
+
+<blockquote>
+<ul>
+<li>Most hated feature: <code>anal.hasnext</code> set to true as default!</li>
+<li>Most loved feature: ASCII-Art graph, of course ;)</li>
+</ul>
+</blockquote>
+
+<ul>
+<li>Advices for new contributors and users ?</li>
+</ul>
+
+<blockquote>
+<p>Contributors, just focus on something you&rsquo;d like to be present in r2 and implement it, maintain it and add tests!!</p>
+
+<p>Users, keep using IDA, unless you want to take the red pill and see how deep the rabbit-hole goes ;)</p>
+</blockquote>
+
+<ul>
+<li>Last word ?</li>
+</ul>
+
+<blockquote>
+<p>Maybe we will see r2 1.0 in the future! VVRRRRRRRRRRRRRRRRRRR</p>
+</blockquote>
+
+<ul>
+<li>Screenshots ?</li>
+</ul>
+
+<p><img src="/images/full.png" alt="Graph example" />
+<em>Example of graph</em></p>
+
+<p><img src="/images/disasm.png" alt="Disasm in graph" />
+<em>Disassembly in graph, without colours (yet)</em></p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

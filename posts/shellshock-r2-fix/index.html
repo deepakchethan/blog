@@ -1,1 +1,295 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/shellshock-r2-fix/</title><link rel="canonical" href="https://radare.today/posts/shellshock-r2-fix/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/shellshock-r2-fix/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Shellshock r2 fix</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Shellshock r2 fix" />
+<meta property="og:description" content="A lot have been discussed recently about this vulnerability in bash. The internet was totally shocked just like what happened with heartbleed.
+Several vulnerabilities have been discovered in bash, which caused the distros to release several updates on the same package and being a little chaotic to know which was the correct patch to take.
+The vulnerability was not just affecting local users which have a little risk, but webservers running CGIs because http parameters are passed as environment variables to the script which was executing the functions defined in there." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/shellshock-r2-fix/" />
+<meta property="article:published_time" content="2014-09-30T02:08:29+02:00" />
+<meta property="article:modified_time" content="2014-09-30T02:08:29+02:00" />
+<meta itemprop="name" content="Shellshock r2 fix">
+<meta itemprop="description" content="A lot have been discussed recently about this vulnerability in bash. The internet was totally shocked just like what happened with heartbleed.
+Several vulnerabilities have been discovered in bash, which caused the distros to release several updates on the same package and being a little chaotic to know which was the correct patch to take.
+The vulnerability was not just affecting local users which have a little risk, but webservers running CGIs because http parameters are passed as environment variables to the script which was executing the functions defined in there.">
+
+
+<meta itemprop="datePublished" content="2014-09-30T02:08:29&#43;02:00" />
+<meta itemprop="dateModified" content="2014-09-30T02:08:29&#43;02:00" />
+<meta itemprop="wordCount" content="828">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Shellshock r2 fix"/>
+<meta name="twitter:description" content="A lot have been discussed recently about this vulnerability in bash. The internet was totally shocked just like what happened with heartbleed.
+Several vulnerabilities have been discovered in bash, which caused the distros to release several updates on the same package and being a little chaotic to know which was the correct patch to take.
+The vulnerability was not just affecting local users which have a little risk, but webservers running CGIs because http parameters are passed as environment variables to the script which was executing the functions defined in there."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Shellshock r2 fix</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2014-09-30T02:08:29&#43;02:00">September 30, 2014</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<p>A lot have been discussed recently about this <a href="https://shellshocker.net/">vulnerability</a> in bash. The internet was totally shocked just like what happened with <a href="http://heartbleed.com/">heartbleed</a>.</p>
+
+<p>Several vulnerabilities have been discovered in bash, which caused the distros to release several updates on the same package and being a little chaotic to know which was the correct patch to take.</p>
+
+<p>The vulnerability was not just affecting local users which have a little risk, but webservers running CGIs because http parameters are passed as environment variables to the script which was executing the functions defined in there.</p>
+
+<p>Finally, it seems that the tempest is calming down and everyone is happy again with the GNU Bourne Again Shell.</p>
+
+<p>But vulnerabilities in security are always not correctly patched, or even properly updated all the affected systems. This is the case of critical servers which can&rsquo;t be easily updated or require too much manual intervention like compiling a new version of the shell by hand, etc.</p>
+
+<p>On embedded systems, this is probably the worst place, because they tend to be poorly updated, luckily few embedded systems use bash for memory constrains reasons. But the vulnerable systems are still there.</p>
+
+<p>At the moment of writing Apple didnt released a security update to fix that vulnerability on OSX. So this exposes all the OSX users and servers.</p>
+
+<p>UPDATE: Apple just released an <a href="http://arstechnica.com/apple/2014/09/apple-patches-shellshock-bash-bug-in-os-x-10-9-10-8-and-10-7/">update</a> while I&rsquo;m writing that blog post.</p>
+
+<h2 id="the-binary-patch">The binary patch</h2>
+
+<p>After reading some links I found some people doing <a href="http://www.openwall.com/lists/oss-security/2014/09/29/1">binary patching</a> for fixing the vulnerability (by removing the functionality).</p>
+
+<p>As the comment describes, the patch consists on nullifying the first byte in every search result of &lsquo;() {\x00&rsquo;.</p>
+
+<p>Solar Designer has implemented a Perl oneliner to fix it which is described on <a href="https://www.schneier.com/blog/archives/2014/09/nasty_vulnerabi.html#c6679473">Bruce&rsquo;s blog</a> and also twitted <a href="https://twitter.com/solardiz/status/516370924426514433">here</a>.</p>
+
+<pre><code>perl -pe 's/\(\) {\0/(){\0\0/g' &lt; /bin/bash
+</code></pre>
+
+<p>This is a good oportunity for showing how to do this with r2 and explain what the patch does.</p>
+
+<pre><code>r2 -qnwc '/ () {\x00;wx 00@@ *' /bin/bash
+</code></pre>
+
+<p>In essence the patch length is the same as in Perl. that give us a quite good compression ratio :)</p>
+
+<p>Let&rsquo;s explain what the r2 oneliner does:</p>
+
+<h2 id="flags">Flags:</h2>
+
+<ul>
+<li><code>-q</code> : quit after running all the -c commands</li>
+<li><code>-n</code> : do not load rbin information</li>
+<li><code>-w</code> : open the file in read-write mode</li>
+<li><code>-c</code> : run the following command</li>
+</ul>
+
+<h2 id="commands">Commands</h2>
+
+<ul>
+<li><code>/ () {\x00</code> : searches the string <code>() {</code> finalized with a null byte.</li>
+<li><code>wx 00 @@ *</code> : writes a null byte (Write heX 0x00) at the very first byte of each search hit.</li>
+</ul>
+
+<h2 id="patching-osx">Patching OSX</h2>
+
+<p>I have tested this in my local Mac and it worked as expected:</p>
+
+<pre><code>$ /bin/bash --version
+GNU bash, version 3.2.51(1)-release (x86_64-apple-darwin13)
+Copyright (C) 2007 Free Software Foundation, Inc.
+$ cp /bin/bash .
+$ env x='() { :;}; echo vulnerable' ./bash -c &quot;:&quot;
+vulnerable
+$ r2 -qnwc '/ () {\x00;wx 00@@ *' bash
+$ env x='() { :;}; echo vulnerable' ./bash -c &quot;:&quot;
+$
+</code></pre>
+
+<p>If we look closer of what that patch is doing we will notice that in OSX it will be patching that null byte in two places. This is because that bin is a fatmach0 that contains the x86-32 and x86-64 programs. We can extract them with this command:</p>
+
+<pre><code>$ rabin2 -x bash
+bash.fat/bash.x86_64.0 created (612336)
+bash.fat/bash.x86_32.1 created (609744)
+</code></pre>
+
+<p>Here we&rsquo;ll see that each file contains only one result for searching &ldquo;() {\x00&rdquo;.</p>
+
+<h2 id="understanding-the-patch">Understanding the patch</h2>
+
+<p>The patch is chopping a string in an array of them which is used to permit the function definition support on environment variables.</p>
+
+<p>That binary patch is just disabling the functionality that <a href="https://ftp.gnu.org/pub/gnu/bash/bash-3.2-patches/bash32-054">this patch</a> is fixing .</p>
+
+<p>That will make the STREQN conditional to always be true.</p>
+
+<p>As long as this is an exotic functionality I guess the patch will not break any bash script. Anyway it&rsquo;s always good to keep a copy of the original binary before patching it to compare or be able to go back to the previous state.</p>
+
+<h2 id="other-vulnerabilities">Other vulnerabilities</h2>
+
+<p>Other vulnerabilities has been also found in bash caused by not correctly fixing the problem or similar ways to exploit the bug.</p>
+
+<p>You can find them all at <a href="https://shellshocker.net/">here</a>. I&rsquo;ll list them and mark them as FIXED if the patch fixes the problem (tested on OSX)</p>
+
+<p>Should not say &ldquo;vulnerable&rdquo;  (FIXED)</p>
+
+<pre><code>env x='() { :;}; echo vulnerable' bash -c &quot;:&quot;
+</code></pre>
+
+<p>Should not display the date  (FIXED)</p>
+
+<pre><code>env X='() { (shellshocker.net)=&gt;\' bash -c &quot;echo date&quot;; cat echo ; rm -f echo
+</code></pre>
+
+<p>Should not say &ldquo;vulnerable&rdquo; (FIXED)</p>
+
+<pre><code>env -i X=' () { }; echo vulnerable' bash -c 'date'
+</code></pre>
+
+<p>Should not crash (NOT AFFECTED)</p>
+
+<pre><code>bash -c 'true &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF &lt;&lt;EOF' || echo &quot;CVE-2014-7186 vulnerable, redir_stack&quot;
+</code></pre>
+
+<p>Shold not display the CVE number (NOT AFFECTED)</p>
+
+<pre><code>(for x in {1..200} ; do echo &quot;for x$x in ; do :&quot;; done; for x in {1..200} ; do echo done ; done) | bash || echo &quot;CVE-2014-7187 vulnerable, word_lineno&quot;
+</code></pre>
+
+<p>You can find a script that collects all the patches for bash on <a href="https://github.com/tjluoma/bash-fix/blob/master/bash-fix.sh">this</a> github.</p>
+
+<p>&ndash;pancake</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

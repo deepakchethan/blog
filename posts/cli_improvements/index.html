@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | GSoC 2018 Final: Console Interface Improvementes</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="GSoC 2018 Final: Console Interface Improvementes" />
+<meta property="og:description" content="Introduction Hi, I&rsquo;m cyanpencil and I was selected for the Console Interface Improvement task for the 2018 edition of the GSoC.
+I had a lot of fun spending this summer coding for radare. I learned so many things, and had an amazing experience overall. I am very grateful to my mentors, Xvilka, Pancake and Maijin, they were always present and closely followed me during the entire summer.
+My task was to improve some aspects of the terminal interface of radare2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/cli_improvements/" />
+<meta property="article:published_time" content="2018-08-19T08:27:46+02:00" />
+<meta property="article:modified_time" content="2018-08-19T08:27:46+02:00" />
+<meta itemprop="name" content="GSoC 2018 Final: Console Interface Improvementes">
+<meta itemprop="description" content="Introduction Hi, I&rsquo;m cyanpencil and I was selected for the Console Interface Improvement task for the 2018 edition of the GSoC.
+I had a lot of fun spending this summer coding for radare. I learned so many things, and had an amazing experience overall. I am very grateful to my mentors, Xvilka, Pancake and Maijin, they were always present and closely followed me during the entire summer.
+My task was to improve some aspects of the terminal interface of radare2.">
+
+
+<meta itemprop="datePublished" content="2018-08-19T08:27:46&#43;02:00" />
+<meta itemprop="dateModified" content="2018-08-19T08:27:46&#43;02:00" />
+<meta itemprop="wordCount" content="643">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="GSoC 2018 Final: Console Interface Improvementes"/>
+<meta name="twitter:description" content="Introduction Hi, I&rsquo;m cyanpencil and I was selected for the Console Interface Improvement task for the 2018 edition of the GSoC.
+I had a lot of fun spending this summer coding for radare. I learned so many things, and had an amazing experience overall. I am very grateful to my mentors, Xvilka, Pancake and Maijin, they were always present and closely followed me during the entire summer.
+My task was to improve some aspects of the terminal interface of radare2."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">GSoC 2018 Final: Console Interface Improvementes</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-08-19T08:27:46&#43;02:00">August 19, 2018</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Hi, I&rsquo;m <a href="https://www.github.com/cyanpencil">cyanpencil</a> and I was selected for the Console Interface Improvement task for the 2018 edition of the GSoC.</p>
+
+<p>I had a lot of fun spending this summer coding for <a href="https://www.github.com/radare/radare2">radare</a>. I learned so many things, and had an amazing experience overall. I am very grateful to my mentors, <a href="https://www.github.com/xvilka">Xvilka</a>, <a href="https://www.github.com/radare">Pancake</a> and <a href="https://www.github.com/Maijin">Maijin</a>, they were always present and closely followed me during the entire summer.</p>
+
+<p>My task was to improve some aspects of the terminal interface of radare2. <a href="http://rada.re/gsoc/2018/ideas.html#title_2">Here</a> you can find a more detailed description of the GSoC task. Unfortunately I didn&rsquo;t manage to complete all the subtasks listed in the project idea; However, I also took care of many things that were not included in the original task. There is still a huge amount of work to do: radare2 is still not very much user friendly, but it&rsquo;s definitely getting better with time.</p>
+
+<hr />
+
+<h3 id="improvements-of-the-graph-drawing-commands-ag">Improvements of the graph drawing commands (ag*)</h3>
+
+<p>The commands for drawing graphs in radare2 (all those starting with <code>ag</code>) had a bit confusing syntax. Even when consulting the help (<code>ag?</code>), it was not exactly clear what graph a certain command would draw and how. I implemented a new syntax for those commands (<code>ag&lt;graph type&gt;&lt;output format&gt;</code>) and made sure to support every type / format combination.</p>
+
+<p>Here&rsquo;s the new <code>ag?</code> help that summarizes my changes:</p>
+
+<pre><code>[0x00005000]&gt; ag?
+|Usage: ag&lt;graphtype&gt;&lt;format&gt; [addr]
+| Graph commands:
+| aga[format]             Data references graph
+| agA[format]             Global data references graph
+| agc[format]             Function callgraph
+| agC[format]             Global callgraph
+| agd[format] [fcn addr]  Diff graph
+| agf[format]             Basic blocks function graph
+| agi[format]             Imports graph
+| agr[format]             References graph
+| agR[format]             Global references graph
+| agx[format]             Cross references graph
+| agg[format]             Custom graph
+| ag-                     Clear the custom graph
+| agn[?] title body       Add a node to the custom graph
+| age[?] title1 title2    Add an edge to the custom graph
+|
+| Output formats:
+| &lt;blank&gt;                 Ascii art
+| *                       r2 commands
+| d                       Graphviz dot
+| g                       Graph Modelling Language (gml)
+| j                       json ('J' for formatted disassembly)
+| k                       SDB key-value
+| t                       Tiny ascii art
+| v                       Interactive ascii art
+| w [path]                Write to path or display graph image (see graph.gv.format and graph.web)
+</code></pre>
+
+<h3 id="graph-jumptables">Graph Jumptables</h3>
+
+<p>Jumptables were creating a lot of trouble in ascii-art graphs, and most of the times the resulting layout was broken. See <a href="https://github.com/radare/radare2/issues/10275">this issue</a> to see what were the problems.
+I tried my best to make the layout better, and this is what I came out with:</p>
+
+<p><img src="/images/gso2018-graph-jmptable.png" alt="" />
+<em>Graph view of a switch statement</em></p>
+
+<p>However, there are still some problems to fix with graph edges (in particular, there are a bit too many overlaps).</p>
+
+<hr />
+
+<h3 id="utf-8-support-in-canvas">UTF-8 support in canvas</h3>
+
+<p><code>RConsCanvas</code>, radare2&rsquo;s own way of drawing complex interfaces in the terminal, had some glitches with UTF-8 characters because it didn&rsquo;t take into account the different byte-length of those special characters. Implementing the support for UTF-8 took quite a lot of time because it meant rewriting many things from scratch and because I had to keep intact the support for ANSI escape codes.
+But I&rsquo;m pretty happy with the result, as now with UTF-8 we can create even more beautiful interfaces:</p>
+
+<p><img src="/images/gsoc2018-utf8-panels.png" alt="" />
+<em>Here&rsquo;s a screen of the &ldquo;panels&rdquo; view with some comments in arabic and braille</em></p>
+
+<hr />
+
+<h3 id="autocompletion-widget-in-visual-offset-prompt">Autocompletion widget in visual offset prompt</h3>
+
+<p>Radare2 already had autocompletion in the visual offset prompt, which worked similarly to bash&rsquo;s autocompletion. My job was to make it more visually appealing by implementing something similar to the autocompletion inside (terminal) vim, where an interactive widget appears under the cursor. Here&rsquo;s the result:</p>
+
+<p><img src="/images/gsoc-2018-autocompletion-widget.gif" alt="" />
+<em>A gif demonstrating the scrolling of the autocompletion widget while in visual offset prompt</em></p>
+
+<hr />
+
+<h3 id="other-fixes-contributions">Other fixes / contributions</h3>
+
+<p>My work included taking care of a lot of other small issues and minor graphical glitches.
+Here you can find every contribution I made in this summer:</p>
+
+<ul>
+<li><p><a href="https://github.com/radare/radare2/pulls?page=3&amp;q=is%3Apr+is%3Amerged+is%3Apr+author%3Acyanpencil+created%3A2018-05-01..2018-08-14">List of merged pull requests</a></p></li>
+
+<li><p><a href="https://github.com/radare/radare2/commits?author=cyanpencil">List of commits</a></p></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

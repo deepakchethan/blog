@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | GSoC&#39;18 Final: Type inference</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="GSoC&#39;18 Final: Type inference" />
+<meta property="og:description" content="GSoC has almost been finished. I would like to summarize my work done so far this summer.
+The goal of this task was to integrate types handling into the radare2 analysis loop, including automatic inference and suggestions.
+Example  C - source code
+#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void main() { int length, length2; char *final; char *s1 = &quot;Hello&quot;; char *s2 = &quot; r2-folks&quot;; length = strlen (s1); length2 = strlen (s2); }  Before my work" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/type_inference/" />
+<meta property="article:published_time" content="2018-08-12T01:45:16+02:00" />
+<meta property="article:modified_time" content="2018-08-12T01:45:16+02:00" />
+<meta itemprop="name" content="GSoC&#39;18 Final: Type inference">
+<meta itemprop="description" content="GSoC has almost been finished. I would like to summarize my work done so far this summer.
+The goal of this task was to integrate types handling into the radare2 analysis loop, including automatic inference and suggestions.
+Example  C - source code
+#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void main() { int length, length2; char *final; char *s1 = &quot;Hello&quot;; char *s2 = &quot; r2-folks&quot;; length = strlen (s1); length2 = strlen (s2); }  Before my work">
+
+
+<meta itemprop="datePublished" content="2018-08-12T01:45:16&#43;02:00" />
+<meta itemprop="dateModified" content="2018-08-12T01:45:16&#43;02:00" />
+<meta itemprop="wordCount" content="879">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="GSoC&#39;18 Final: Type inference"/>
+<meta name="twitter:description" content="GSoC has almost been finished. I would like to summarize my work done so far this summer.
+The goal of this task was to integrate types handling into the radare2 analysis loop, including automatic inference and suggestions.
+Example  C - source code
+#include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;string.h&gt; void main() { int length, length2; char *final; char *s1 = &quot;Hello&quot;; char *s2 = &quot; r2-folks&quot;; length = strlen (s1); length2 = strlen (s2); }  Before my work"/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">GSoC&#39;18 Final: Type inference</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2018-08-12T01:45:16&#43;02:00">August 12, 2018</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<p>GSoC has almost been finished. I would like to summarize <a href="https://github.com/radare/radare2/commits?author=sivaramaaa">my work</a> done so far this summer.</p>
+
+<p>The goal of this task was to integrate types handling into the radare2 analysis loop, including automatic inference and suggestions.</p>
+
+<h3 id="example">Example</h3>
+
+<ul>
+<li><p>C - source code</p>
+
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+void main() {
+
+int length, length2;
+char *final;
+char *s1 = &quot;Hello&quot;;
+char *s2 = &quot; r2-folks&quot;;
+
+length = strlen (s1);
+length2 = strlen (s2);
+}
+</code></pre></li>
+
+<li><p>Before my work</p>
+
+<pre><code>/ (fcn) sym.main 157
+|   sym.main ();
+|           ; var int local_20h @ rbp-0x20
+|           ; var int local_1ch @ rbp-0x1c
+|           ; var int local_18h @ rbp-0x18
+|           ; var int local_10h @ rbp-0x10
+|           ; var int local_8h @ rbp-0x8
+|           ; DATA XREF from entry0 (0x6bd)
+|           0x000007aa      55             push rbp
+|           0x000007ab      4889e5         mov rbp, rsp
+|           0x000007ae      4883ec20       sub rsp, 0x20
+|           0x000007b2      488d051b0100.  lea rax, str.Hello          ; 0x8d4 ; &quot;Hello&quot;
+|           0x000007b9      488945e8       mov qword [local_18h], rax
+|           0x000007bd      488d05160100.  lea rax, str.r2_folks       ; 0x8da ; &quot; r2-folks&quot;
+|           0x000007c4      488945f0       mov qword [local_10h], rax
+|           0x000007c8      488b45e8       mov rax, qword [local_18h]
+|           0x000007cc      4889c7         mov rdi, rax
+|           0x000007cf      e88cfeffff     call sym.imp.strlen         ; size_t strlen(const char *s)
+|           0x000007d4      8945e0         mov dword [local_20h], eax
+|           0x000007d7      488b45f0       mov rax, qword [local_10h]
+|           0x000007db      4889c7         mov rdi, rax
+|           0x000007de      e87dfeffff     call sym.imp.strlen         ; size_t strlen(const char *s)
+</code></pre></li>
+
+<li><p>After</p>
+
+<pre><code>/ (fcn) sym.main 157
+|   sym.main (int argc, char **argv, char **envp);
+|           ; var size_t local_20h @ rbp-0x20
+|           ; var size_t size @ rbp-0x1c
+|           ; var char *src @ rbp-0x18
+|           ; var char *s2 @ rbp-0x10
+|           ; var char *dest @ rbp-0x8
+|           ; DATA XREF from entry0 (0x6bd)
+|           0x000007aa      55             push rbp
+|           0x000007ab      4889e5         mov rbp, rsp
+|           0x000007ae      4883ec20       sub rsp, 0x20
+|           0x000007b2      488d051b0100.  lea rax, str.Hello          ; 0x8d4 ; &quot;Hello&quot;
+|           0x000007b9      488945e8       mov qword [src], rax
+|           0x000007bd      488d05160100.  lea rax, str.r2_folks       ; 0x8da ; &quot; r2-folks&quot;
+|           0x000007c4      488945f0       mov qword [s2], rax
+|           0x000007c8      488b45e8       mov rax, qword [src]
+|           0x000007cc      4889c7         mov rdi, rax                ; const char *s
+|           0x000007cf      e88cfeffff     call sym.imp.strlen         ; size_t strlen(const char *s)
+|           0x000007d4      8945e0         mov dword [local_20h], eax
+|           0x000007d7      488b45f0       mov rax, qword [s2]
+|           0x000007db      4889c7         mov rdi, rax                ; const char *s
+|           0x000007de      e87dfeffff     call sym.imp.strlen         ; size_t strlen(const char *s)
+</code></pre></li>
+</ul>
+
+<h3 id="implementation">Implementation</h3>
+
+<p>The type inference is well integrated with command <code>afta</code> and mainly implemented using these techniques :</p>
+
+<ul>
+<li>Function signature</li>
+</ul>
+
+<p>The arguments type and return type of known library functions are stored in sdb (you can inspect it using <code>k</code> comands), so whenever we hit a known function call while performing analysis, we extract that info and propagate that in both forward and backward manner. This step contributes the major portion of the type inference</p>
+
+<ul>
+<li>Instruction access pattern</li>
+</ul>
+
+<p>1) Strings</p>
+
+<pre><code>lea rax, str.Hello
+mov qword [local_30h], rax
+</code></pre>
+
+<p>When we have a load instruction with an address of string flagspace and then followed mov instruction having
+a local variable as it&rsquo;s destination and string address as it&rsquo;s source, we can infer the type of local variable as <code>char *</code></p>
+
+<p>2) Signed and Unsigned</p>
+
+<pre><code>/ (fcn) main 202
+|           ; var signed int local_34h @ rbp-0x34
+|           ; var signed int local_30h @ rbp-0x30
+|           ; var unsigned int local_28h @ rbp-0x28
+|           0x000007a8      8945d0         mov dword [local_30h], eax
+|       ,=&lt; 0x000007ab      eb43           jmp 0x7f0
+|    :|:|   0x000007cd      8b45dc         mov eax, dword [local_24h]
+|    :|:|   0x000007d0      3b45cc         cmp eax, dword [local_34h]
+|   ,=====&lt; 0x000007d3      7e06           jle 0x7db
+</code></pre>
+
+<p>Instructions like <code>ja, jae, jb, jbe, je,jne</code> are typed as unsigned</p>
+
+<p>Instructions like <code>jge, jnl, jng, jnge</code> are typed as signed</p>
+
+<p>3) Pointer operation</p>
+
+<pre><code>mov rax, qword [ptr]
+mov rax, qword [rax]
+mov rdi, rax                ; char *s
+call sym.imp.sprintf        ; int sprintf(char *s, const char *format, ...)
+</code></pre>
+
+<p>Here we can see that rax contains address of local var (ptr), which is the dereferenced once and value is stored in rax, using info from <code>sprintf</code> we can infer that rax contains address of string, so from instruction access pattern we could infer that local var (ptr) is double pointer i.e <code>char **</code></p>
+
+<p>4) Format string</p>
+
+<pre><code>; var char *local_18h @ rbp-0x18
+mov rax, qword [local_18h]
+mov rsi, rax
+lea rdi, str.msg_:__s       ; 0x84f ; &quot;msg : %s\n&quot;
+call sym.imp.printf
+</code></pre>
+
+<p>So whenever we encounter functions like printf/ sprintf, we try to parse it&rsquo;s format string and extract format char and then use that to infer corresponding variable&rsquo;s type.</p>
+
+<p>The format specifications are extracted from <code>anal/d/spec.sdb</code>. You could create a new profile for specifying the set of format chars depending upon different libraries/operating systems/programming languages like this :</p>
+
+<pre><code>win=spec
+spec.win.u32=unsigned int
+</code></pre>
+
+<p>Then change your default specification to newly created one using this config variable <code>e anal.spec = win</code></p>
+
+<h3 id="future-improvements">Future improvements</h3>
+
+<h4 id="constrained-types">Constrained types</h4>
+
+<p>The idea here is to implement something like this :</p>
+
+<pre><code>var int local_20h {0..10 | 30..40}
+var char* local_30h {&lt; 100}
+</code></pre>
+
+<p>This is also related to Radeco issues:</p>
+
+<ul>
+<li>Simple Type System in IR <a href="https://github.com/radareorg/radeco-lib/issues/118">#118</a></li>
+<li>Use Chalk engine for solving constraints and as a decision engine <a href="https://github.com/radareorg/radeco-lib/issues/182">#182</a></li>
+</ul>
+
+<h4 id="further-analysis">Further analysis</h4>
+
+<ul>
+<li><p>Getting the function&rsquo;s argument values for each xrefs-to it <a href="https://github.com/radare/radare2/issues/10783">#10783</a></p></li>
+
+<li><p>Extract demangled parameter types and return type function args <a href="https://github.com/radare/radare2/issues/4756">#4756</a></p></li>
+</ul>
+
+<h4 id="dwarf-pdb-integration">DWARF/PDB integration</h4>
+
+<p>Load data types/structs from DWARF <a href="https://github.com/radare/radare2/issues/741">#741</a></p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

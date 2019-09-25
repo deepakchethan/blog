@@ -1,1 +1,359 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/ropnroll/</title><link rel="canonical" href="https://radare.today/posts/ropnroll/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/ropnroll/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Rop&#39;n&#39;roll</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Rop&#39;n&#39;roll" />
+<meta property="og:description" content="You may have already read this article 8 months ago, but since we changed a lot the ROP-related syntax, we&rsquo;re quite sure that you won&rsquo;t mind reading an updated version
+As attackers are moving forwards, so does the defense. Since a couple of years, every decent operating system has non-executable stack, defeating the classic &lsquo;put your shellcode on the stack and execute it&rsquo; modus operanti.
+This is why attackers are now using (among other things) Return Oriented Programming, also known as ROP, to bypass this protection." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/ropnroll/" />
+<meta property="article:published_time" content="2015-04-18T15:00:00+02:00" />
+<meta property="article:modified_time" content="2015-04-18T15:00:00+02:00" />
+<meta itemprop="name" content="Rop&#39;n&#39;roll">
+<meta itemprop="description" content="You may have already read this article 8 months ago, but since we changed a lot the ROP-related syntax, we&rsquo;re quite sure that you won&rsquo;t mind reading an updated version
+As attackers are moving forwards, so does the defense. Since a couple of years, every decent operating system has non-executable stack, defeating the classic &lsquo;put your shellcode on the stack and execute it&rsquo; modus operanti.
+This is why attackers are now using (among other things) Return Oriented Programming, also known as ROP, to bypass this protection.">
+
+
+<meta itemprop="datePublished" content="2015-04-18T15:00:00&#43;02:00" />
+<meta itemprop="dateModified" content="2015-04-18T15:00:00&#43;02:00" />
+<meta itemprop="wordCount" content="927">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Rop&#39;n&#39;roll"/>
+<meta name="twitter:description" content="You may have already read this article 8 months ago, but since we changed a lot the ROP-related syntax, we&rsquo;re quite sure that you won&rsquo;t mind reading an updated version
+As attackers are moving forwards, so does the defense. Since a couple of years, every decent operating system has non-executable stack, defeating the classic &lsquo;put your shellcode on the stack and execute it&rsquo; modus operanti.
+This is why attackers are now using (among other things) Return Oriented Programming, also known as ROP, to bypass this protection."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Rop&#39;n&#39;roll</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2015-04-18T15:00:00&#43;02:00">April 18, 2015</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>You may have already read this article 8 months ago, but since we changed a lot the ROP-related syntax, we&rsquo;re quite sure that you won&rsquo;t mind reading an updated version</p>
+
+<p>As attackers are moving forwards, so does the defense. Since a couple of years, every decent operating system has non-executable stack, defeating the classic &lsquo;put your shellcode on the stack and execute it&rsquo; <em>modus operanti</em>.</p>
+
+<p>This is why attackers are now using (among other things) <a href="https://en.wikipedia.org/wiki/Return-oriented_programming">Return Oriented Programming</a>, also known as <em>ROP</em>, to bypass this protection.</p>
+
+<p>Because radare2 (also) aims to be useful to exploits writers and make their life easier, it can:</p>
+
+<ul>
+<li>hunt for gadgets, with a configurable depth</li>
+<li>filter gadgets</li>
+
+<li><p>do this for multiples archs</p>
+
+<pre><code>[0x08048320]&gt; /R
+Do you want to print 468.9K chars? (y/N)
+</code></pre></li>
+</ul>
+
+<p>Well, let&rsquo;s filter.</p>
+
+<pre><code>[0x08048350]&gt; /R call eax
+  0x080483a3   0085c0741155  add byte [ebp + 0x551174c0], al
+  0x080483a9           89e5  mov ebp, esp
+  0x080483ab         83ec14  sub esp, 0x14
+  0x080483ae     6824a00408  push 0x804a024
+  0x080483b3           ffd0  call eax
+
+  0x080483a8             55  push ebp
+  0x080483a9           89e5  mov ebp, esp
+  0x080483ab         83ec14  sub esp, 0x14
+  0x080483ae     6824a00408  push 0x804a024
+  0x080483b3           ffd0  call eax
+
+  0x080483ac             ec  in al, dx
+  0x080483ad           1468  adc al, 0x68
+  0x080483af           24a0  and al, 0xa0
+  0x080483b1           0408  add al, 8
+  0x080483b3           ffd0  call eax
+
+[0x08048350]&gt; 
+
+</code></pre>
+
+<p>You can also display them in a linear manner, à la <a href="https://github.com/JonathanSalwan/ROPgadget">ROPGadget</a>, you just have to use <code>/Rl</code>:</p>
+
+<pre><code>[0x08048350]&gt; /Rl leave
+0x080483b3: call eax; add esp, 0x10; leave; ret;
+0x080483b6: les edx, [eax]; leave; ret;
+0x080483ed: call ecx; add esp, 0x10; leave; ret;
+0x080483f0: les edx, [eax]; leave; ret;
+0x0804840f: call 0x8048390; mov byte [0x804a024], 1; leave; ret;
+0x08048419: or byte [ecx], al; leave; ret;
+0x08048440: call edx; add esp, 0x10; leave; jmp 0x80483c0;
+0x08048443: les edx, [eax]; leave; jmp 0x80483c0;
+0x080484af: call 0x8048320; add esp, 0x10; mov edi, dword [ebp - 4]; leave; ret;
+0x080484b3: inc dword [ebx + 0x7d8b10c4]; cld; leave; ret;
+0x080484b5: les edx, [eax]; mov edi, dword [ebp - 4]; leave; ret;
+0x080484b8: jge 0x80484b6; leave; ret;
+0x080484ee: adc byte [eax], bh; mov ecx, dword [ebp - 4]; leave; lea esp, [ecx - 4]; ret;
+0x080484ef: mov eax, 0; mov ecx, dword [ebp - 4]; leave; lea esp, [ecx - 4]; ret;
+0x080484f2: add byte [eax], al; mov ecx, dword [ebp - 4]; leave; lea esp, [ecx - 4]; ret;
+0x080484f5: dec ebp; cld; leave; lea esp, [ecx - 4]; ret;
+</code></pre>
+
+<p>If you&rsquo;re searching for a ret-to-reg gadget, you&rsquo;re only interested into <code>call reg</code> ones; you can do this with regexp, with <code>/R/</code></p>
+
+<pre><code>[0x08048350]&gt; /R/ call e[abcd]x
+  0x080483a3   0085c0741155  add byte [ebp + 0x551174c0], al
+  0x080483a9           89e5  mov ebp, esp
+  0x080483ab         83ec14  sub esp, 0x14
+  0x080483ae     6824a00408  push 0x804a024
+  0x080483b3           ffd0  call eax
+
+  0x080483a8             55  push ebp
+  0x080483a9           89e5  mov ebp, esp
+  0x080483ab         83ec14  sub esp, 0x14
+  0x080483ae     6824a00408  push 0x804a024
+  0x080483b3           ffd0  call eax
+
+  0x080483ac             ec  in al, dx
+  0x080483ad           1468  adc al, 0x68
+  0x080483af           24a0  and al, 0xa0
+  0x080483b1           0408  add al, 8
+  0x080483b3           ffd0  call eax
+
+  0x080483e2           89e5  mov ebp, esp
+  0x080483e4         83ec10  sub esp, 0x10
+  0x080483e7             50  push eax
+  0x080483e8     6824a00408  push 0x804a024
+  0x080483ed           ffd1  call ecx
+
+  0x080483e5             ec  in al, dx
+  0x080483e6         105068  adc byte [eax + 0x68], dl
+  0x080483e9           24a0  and al, 0xa0
+  0x080483eb           0408  add al, 8
+  0x080483ed           ffd1  call ecx
+
+  0x08048434   0085d274f255  add byte [ebp + 0x55f274d2], al
+  0x0804843a           89e5  mov ebp, esp
+  0x0804843c         83ec14  sub esp, 0x14
+  0x0804843f             50  push eax
+  0x08048440           ffd2  call edx
+
+  0x08048436       d274f255  sal byte [edx + esi*8 + 0x55], cl
+  0x0804843a           89e5  mov ebp, esp
+  0x0804843c         83ec14  sub esp, 0x14
+  0x0804843f             50  push eax
+  0x08048440           ffd2  call edx
+
+  0x08048438           f255  push ebp
+  0x0804843a           89e5  mov ebp, esp
+  0x0804843c         83ec14  sub esp, 0x14
+  0x0804843f             50  push eax
+  0x08048440           ffd2  call edx
+
+  0x08048439             55  push ebp
+  0x0804843a           89e5  mov ebp, esp
+  0x0804843c         83ec14  sub esp, 0x14
+  0x0804843f             50  push eax
+  0x08048440           ffd2  call edx
+
+  0x0804843b           e583  in eax, -0x7d
+  0x0804843d             ec  in al, dx
+  0x0804843e           1450  adc al, 0x50
+  0x08048440           ffd2  call edx
+</code></pre>
+
+<p>Well, we only want the <code>call reg</code> part, we don&rsquo;t care about the previous operands:</p>
+
+<pre><code>[0x08048350]&gt; /R/ call e[abcd]x~call
+  0x080483b3           ffd0  call eax
+  0x080483b3           ffd0  call eax
+  0x080483b3           ffd0  call eax
+  0x080483ed           ffd1  call ecx
+  0x080483ed           ffd1  call ecx
+  0x08048440           ffd2  call edx
+  0x08048440           ffd2  call edx
+  0x08048440           ffd2  call edx
+  0x08048440           ffd2  call edx
+  0x08048440           ffd2  call edx
+</code></pre>
+
+<p>Ho, by the way, if you want to search for several gadgets, the separator is <code>;</code>, which also happen to be the one to seperate commands in r2. This is why you need to quote the <strong>whole</strong> command like this:</p>
+
+<pre><code>[0x08048350]&gt; &quot;/R/ inc *;ret&quot; 
+  0x08048413           ffc6  inc esi
+  0x08048415     0524a00408  add eax, 0x804a024
+  0x0804841a           01c9  add ecx, ecx
+  0x0804841c           f3c3  ret
+
+  0x080484b3   ff83c4108b7d  inc dword [ebx + 0x7d8b10c4]
+  0x080484b9             fc  cld
+  0x080484ba             c9  leave
+  0x080484bb             c3  ret
+
+  0x0804867c             41  inc ecx
+  0x0804867d             c3  ret
+
+[0x08048350]&gt; 
+</code></pre>
+
+<p>It&rsquo;s possible to change the depth of the search, to speed-up the hunt:</p>
+
+<pre><code>[0x08048320]&gt; e search.roplen = 4
+[0x08048320]&gt; /R mov ebp,call eax
+0x08048386 call eax
+  0x0804837a         89e5  mov ebp, esp
+  0x0804837c       83ec18  sub esp, 0x18
+  0x0804837f c7042420a00408  mov dword [esp], 0x804a020
+  0x08048386         ffd0  call eax
+
+0x0804840f call eax
+  0x08048403         89e5  mov ebp, esp
+  0x08048405       83ec18  sub esp, 0x18
+  0x08048408 c70424109f0408  mov dword [esp], 0x8049f10
+  0x0804840f         ffd0  call eax
+
+[0x08048320]&gt;
+</code></pre>
+
+<p>And as always, you can append <code>j</code> to get a JSON output.</p>
+
+<p>The next step might be ROP chain assembling and manipulation, and why not automatic-construction, à la <a href="https://github.com/radare/radare2/issues/1019">mona.py</a>? Or maybe a semantic search powered by <a href="https://github.com/radare/radare2/wiki/ESIL">ESIL</a>?</p>
+
+<p>Anyway, contributions are welcome, and if you&rsquo;re using radare2 to pop somes shells, we&rsquo;ll be <em>delighted</em> to know about it!</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

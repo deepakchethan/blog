@@ -1,1 +1,339 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/solving-crackmes-with-ldpreload/</title><link rel="canonical" href="https://radare.today/posts/solving-crackmes-with-ldpreload/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/solving-crackmes-with-ldpreload/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Solving crackmes with LDPRELOAD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Solving crackmes with LDPRELOAD" />
+<meta property="og:description" content="This is a translation of this article.
+One of the most common technics used in UNIX for analyzing and modifying a program consists in preloading a library to make the dynamic linker priorize the functions in there before the ones coming from external libraries.
+In fact, in iOS, the whole MobileSubstrate thing and the Flex app are based on this concept to extend and modify the functionalities of the applications in a very simple way." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/solving-crackmes-with-ldpreload/" />
+<meta property="article:published_time" content="2014-09-16T15:40:28+02:00" />
+<meta property="article:modified_time" content="2014-09-16T15:40:28+02:00" />
+<meta itemprop="name" content="Solving crackmes with LDPRELOAD">
+<meta itemprop="description" content="This is a translation of this article.
+One of the most common technics used in UNIX for analyzing and modifying a program consists in preloading a library to make the dynamic linker priorize the functions in there before the ones coming from external libraries.
+In fact, in iOS, the whole MobileSubstrate thing and the Flex app are based on this concept to extend and modify the functionalities of the applications in a very simple way.">
+
+
+<meta itemprop="datePublished" content="2014-09-16T15:40:28&#43;02:00" />
+<meta itemprop="dateModified" content="2014-09-16T15:40:28&#43;02:00" />
+<meta itemprop="wordCount" content="988">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Solving crackmes with LDPRELOAD"/>
+<meta name="twitter:description" content="This is a translation of this article.
+One of the most common technics used in UNIX for analyzing and modifying a program consists in preloading a library to make the dynamic linker priorize the functions in there before the ones coming from external libraries.
+In fact, in iOS, the whole MobileSubstrate thing and the Flex app are based on this concept to extend and modify the functionalities of the applications in a very simple way."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Solving crackmes with LDPRELOAD</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2014-09-16T15:40:28&#43;02:00">September 16, 2014</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>This is a translation of <a href="http://www.securitybydefault.com/2014/09/solucionando-crackmes-precargando.html">this</a> article.</p>
+
+<p>One of the most common technics used in UNIX for analyzing and modifying a program consists in preloading a library to make the dynamic linker priorize the functions in there before the ones coming from external libraries.</p>
+
+<p>In fact, in iOS, the whole <a href="http://iphonedevwiki.net/index.php/MobileSubstrate">MobileSubstrate</a> thing and the <a href="https://www.adobe.com/products/flex.html">Flex app</a> are based on this concept to extend and modify the functionalities of the applications in a very simple way.</p>
+
+<p>The procedure requires defining an environment variable (<code>LD_PRELOAD</code> or <code>DYLD_INSERT_LIBRARIES</code> in iOS/OSX). It is then parsed by the <a href="https://en.wikipedia.org/wiki/Dynamic_linker">dynamic linker</a> (ld.so or dyld) which will load the library allowing us to:</p>
+
+<ul>
+<li>inspect function parameters and contents</li>
+<li>change the return value of a function</li>
+<li>extend its functionalities</li>
+<li>replace the implementation</li>
+<li>dump backtraces</li>
+<li>&hellip;</li>
+</ul>
+
+<p>To show up this theory I wrote a small crackme:</p>
+
+<pre><code> I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdHJpbmcuaD4KCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpIHsKCWNoYXIgKnBhc3MgPSAoY2hhciAqKWFyZ3ZbMF07CglpZiAoYXJnYzwyKSB7CgkJcHJpbnRmICgiR2ltbWUgYW4gYXJnXG4iKTsKCQlyZXR1cm4gMTsKCX0KCWlmICghc3RyY21wICgiYSIsICJiIikpIHsKCQlwcmludGYgKCJBcmUgeW91IHRyaWNraW5nIG1lP1xuIik7CgkJcmV0dXJuIDE7Cgl9CglpZiAoIXN0cmNtcCAoYXJndlsxXSwgcGFzcykpIHsKCQlwcmludGYgKCJZb3Ugd2luIVxuIik7CgkJcmV0dXJuIDA7Cgl9CglwcmludGYgKCJXcm9uZ1xuIik7CglyZXR1cm4gMTsKfQo=
+</code></pre>
+
+<p>The disasm of that crackme in OSX looks like this:</p>
+
+<p><img src="http://radare.org/img/post/dis-text.png" alt="" /></p>
+
+<p>Injecting libraries is only possible on non-static, non-suided executables. This can be checked with <code>ls</code> and <code>rabin2</code>:</p>
+
+<pre><code>$ isSuid() { ls -l $1 |awk '{print $1}' | grep -q s &amp;&amp; echo YES || echo NO; }
+$ isStatic() { rabin2 -I $1 | grep ^static | grep -q true &amp;&amp; echo YES || echo NO; }
+
+$ isSuid ./a.out
+NO
+
+$ isStatic ./a.out
+NO
+</code></pre>
+
+<p>We&rsquo;re lucky! This crackme that executable is fine to continue our explanations ;)</p>
+
+<p>At this point we must know which symbols and libraries do the program import or use. For that we will use <code>rabin2</code>, a program that comes with <code>radare2</code> and will allow us to inspect and extract information from binaries, mostly executable programs and libraries.</p>
+
+<pre><code>$ rabin2 -qi a.out
+printf
+strcmp
+dyld_stub_binder
+
+$ rabin2 -ql a.out
+/usr/lib/libSystem.B.dylib
+</code></pre>
+
+<p>Fine, looks like the executable is using <code>printf</code> and <code>strcmp</code>. We can asume that the program is using strcmp to verify the password provided by the user. So we will write a small library that will override the return value of it whatever which parameters it takes.</p>
+
+<pre><code>$ cat mylib.c
+int strcmp(char *a, char *b) { return 0; }
+$ gcc -fPIC -shared mylib.c -o mylib.dylib
+
+$ rarun2 program=./a.out preload=mylib.dylib arg1=something
+Are you tricking me?
+</code></pre>
+
+<p>If we change the return value, the crackme will detect it, because at first is doing an always-false conditional that will spot the hooker.</p>
+
+<p>So, we need to create a condition or filter to make it return 0 only when called from the password check &lsquo;call&rsquo;.</p>
+
+<p>In this example we decided to reimplement <code>strcmp</code> to avoid making the example more complex and avoid explaining/depending on lazy binding and rtld-next features.</p>
+
+<p>I wrote this (arch/compiler-specific) macro to retrieve the address of the caller.</p>
+
+<pre><code>#define GETCALLER(x,y)\
+	void *x = (void*)*(&amp;x+2+y);
+
+int strcmp (char *a, char *b) {
+	GETCALLER(caller, 2+1); // 2 args + 1 import redirect
+	if (caller == 0x100000ee7) {
+		write (1, &quot;INT\n&quot;, 4);
+		return 0;
+	}
+	int al = strlen (a);
+	if (al != strlen (b))
+    	return 1;
+	return memcmp (a, b, al);
+}
+</code></pre>
+
+<p>The magic number 0x100000ee7 is the address of the next instruction after the <code>call strcmp</code> of the caller that we want to intercept, we takes this address because is the one stored in the stack.</p>
+
+<p><img src="http://radare.org/img/post/strcmp.png" alt="" /></p>
+
+<p>We compile the library and execute the crackme with rarun2 to make him define the environment and inject the library in the program via LD_PRELOAD method or DYLD_LIBRARY_INSERT depending if running on Linux/BSD or OSX.</p>
+
+<pre><code>$ gcc -shared -fPIC mylib.c -o mylib.dylib
+$ rarun2 program=./a.out preload=mylib.dylib arg1=something
+You Win!
+</code></pre>
+
+<p>It&rsquo;s important to say that preloading a library allow us to introduce hooks on the calls to external libraries. This is.. we can&rsquo;t hook internal program calls.. or we do?</p>
+
+<p>In the case of having the possibility to modify the program we can patch the calls to the function we want to hook to an external simbol in the PLT, and then let our LD_PRELOAD implementation decide which caller is accessing the hook and perform a redirect to the original destination.</p>
+
+<p>This way we can hook internal or external function calls without having to reallocate the executable program.</p>
+
+<p>Let&rsquo;s make an example to make it clear:</p>
+
+<pre><code>$ cat test.c
+int test(char *a) {
+    printf (&quot;Testing arguments.. &quot;);
+    if (!strcmp (a, &quot;foo&quot;)) {
+        printf (&quot;LE WIN!\n&quot;);
+        return 0;
+    }
+    printf (&quot;FAILE!\n&quot;);
+    return 1;
+}
+int main(int argc, char **argv) {
+    return test (argv[0]);
+}
+</code></pre>
+
+<p>We build and disassemble the program</p>
+
+<pre><code>$ gcc test.c
+$ r2 -Aqc 'pD $SS @ $S' a.out
+</code></pre>
+
+<p><img src="http://radare.org/img/post/dis-text2.png" alt="" /></p>
+
+<p>As we can see, the <code>sym._text</code> is defined at <code>0x100000e90</code>. If we want to reimplement that function with an external one we will need to find a target import and write our call proxy in there, deciding which action take depending on the address of the caller. Import symbols are placed in the process memory and are overwriten by the dynamic linker to set the address of the mapped address of the library in memory.</p>
+
+<pre><code>$ rabin2 -i a.out
+[Imports]
+ordinal=000 plt=0x100000f38 bind=NONE type=FUNC name=printf
+ordinal=001 plt=0x100000f3e bind=NONE type=FUNC name=strcmp
+ordinal=002 plt=0x000000000 bind=NONE type=FUNC name=dyld_stub_binder
+
+3 imports
+
+$ rabin2 -s a.out | grep imp.
+vaddr=0x100000f38 paddr=0x00000f38 ord=003 fwd=NONE sz=0 bind=LOCAL type=FUNC name=imp.printf
+vaddr=0x100000f3e paddr=0x00000f3e ord=004 fwd=NONE sz=0 bind=LOCAL type=FUNC name=imp.strcmp
+</code></pre>
+
+<p>Once we get the address of the imports we can proceed to patch the program:</p>
+
+<pre><code>$ r2 -qc 'wa jmp 0x100000f38 @ 0x100000e90' -w a.out
+</code></pre>
+
+<p>If we disassemble <code>sym._test</code> now, we can observe a call to <code>sym.imp.printf</code>:</p>
+
+<p><img src="http://radare.org/img/post/dis-pd.png" alt="patched code" /></p>
+
+<p>If we run the program now we will be able to see the expected password, because we are displaying the argument passed to <code>strcmp</code></p>
+
+<pre><code>$ ./a.out
+./a.out
+</code></pre>
+
+<p>And then we run the original crackme with the correct password to verify:</p>
+
+<pre><code>$ ./a.out.orig ./a.out.orig
+LE WIN!
+</code></pre>
+
+<p>For this example we didnt felt the need to investigate much further, but this PoC clearly shows how to use r2 to inject <em>LDPRELOADed</em> libraries and how to patch executables. And mixing this with a carefully written library we can trace internal api calls or reimplement them on the outside.</p>
+
+<p>&ndash;pancake</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

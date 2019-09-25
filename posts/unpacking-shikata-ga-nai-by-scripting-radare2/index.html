@@ -1,1 +1,371 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/unpacking-shikata-ga-nai-by-scripting-radare2/</title><link rel="canonical" href="https://radare.today/posts/unpacking-shikata-ga-nai-by-scripting-radare2/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/unpacking-shikata-ga-nai-by-scripting-radare2/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Unpacking shikata-ga-nai by scripting radare2</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Unpacking shikata-ga-nai by scripting radare2" />
+<meta property="og:description" content="During latest hacklu&rsquo;s radare workshop, one part was dedicated to how to generically unpack shikata-ga-nai. This blogpost is a simple transposition of the slides into a blogpost.
+Disclaimer: almost everything here is stolen based on ideas from NighterMan.
+First, was is Shitkata-ga-nai? It&rsquo;s a polymorphic shellcode encoder implemented into metasploit:
+msf &gt; info encoder/x86/shikata_ga_nai &gt; out.txt Name: Polymorphic XOR Additive Feedback Encoder Module: encoder/x86/shikata_ga_nai Platform: All Arch: x86 Rank: Excellent Provided by: spoonm &lt;spoonm@no$email." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/unpacking-shikata-ga-nai-by-scripting-radare2/" />
+<meta property="article:published_time" content="2015-12-08T01:00:00+02:00" />
+<meta property="article:modified_time" content="2015-12-08T01:00:00+02:00" />
+<meta itemprop="name" content="Unpacking shikata-ga-nai by scripting radare2">
+<meta itemprop="description" content="During latest hacklu&rsquo;s radare workshop, one part was dedicated to how to generically unpack shikata-ga-nai. This blogpost is a simple transposition of the slides into a blogpost.
+Disclaimer: almost everything here is stolen based on ideas from NighterMan.
+First, was is Shitkata-ga-nai? It&rsquo;s a polymorphic shellcode encoder implemented into metasploit:
+msf &gt; info encoder/x86/shikata_ga_nai &gt; out.txt Name: Polymorphic XOR Additive Feedback Encoder Module: encoder/x86/shikata_ga_nai Platform: All Arch: x86 Rank: Excellent Provided by: spoonm &lt;spoonm@no$email.">
+
+
+<meta itemprop="datePublished" content="2015-12-08T01:00:00&#43;02:00" />
+<meta itemprop="dateModified" content="2015-12-08T01:00:00&#43;02:00" />
+<meta itemprop="wordCount" content="847">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Unpacking shikata-ga-nai by scripting radare2"/>
+<meta name="twitter:description" content="During latest hacklu&rsquo;s radare workshop, one part was dedicated to how to generically unpack shikata-ga-nai. This blogpost is a simple transposition of the slides into a blogpost.
+Disclaimer: almost everything here is stolen based on ideas from NighterMan.
+First, was is Shitkata-ga-nai? It&rsquo;s a polymorphic shellcode encoder implemented into metasploit:
+msf &gt; info encoder/x86/shikata_ga_nai &gt; out.txt Name: Polymorphic XOR Additive Feedback Encoder Module: encoder/x86/shikata_ga_nai Platform: All Arch: x86 Rank: Excellent Provided by: spoonm &lt;spoonm@no$email."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Unpacking shikata-ga-nai by scripting radare2</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2015-12-08T01:00:00&#43;02:00">December 8, 2015</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>During latest <a href="http://hack.lu">hacklu</a>&rsquo;s radare workshop, one part was
+dedicated to <em>how to generically unpack shikata-ga-nai</em>. This blogpost is a
+simple transposition of the slides into a blogpost.</p>
+
+<p>Disclaimer: almost everything here is <s>stolen</s> based on ideas from
+<a href="https://twitter.com/nighterman">NighterMan</a>.</p>
+
+<p>First, was is Shitkata-ga-nai?
+It&rsquo;s a polymorphic shellcode encoder implemented into <a href="https://www.metasploit.com/">metasploit</a>:</p>
+
+<pre><code>msf &gt; info encoder/x86/shikata_ga_nai &gt; out.txt
+
+       Name: Polymorphic XOR Additive Feedback Encoder
+     Module: encoder/x86/shikata_ga_nai
+   Platform: All
+       Arch: x86
+       Rank: Excellent
+
+Provided by:
+  spoonm &lt;spoonm@no$email.com&gt;
+
+Description:
+  This encoder implements a polymorphic XOR additive feedback encoder. 
+  The decoder stub is generated based on dynamic instruction 
+  substitution and dynamic block ordering. Registers are also selected 
+  dynamically.
+</code></pre>
+
+<p>Looks scary. To unpack it, you have several solutions:</p>
+
+<ol>
+<li>Run it on your machine and see what happens</li>
+<li>Step-step-step-step-step-step in GDB</li>
+<li>Trace the execution in a virtual machine</li>
+<li>Use radare2 with <em>ESIL</em>.</li>
+</ol>
+
+<p>ESIL (Evaluable String Intermediary Language) is radare2&rsquo;s own <em>Intermediary Language</em> (IL),
+<a href="https://en.wikipedia.org/wiki/Reverse_Polish_notation">RPN</a>-ish, used for
+emulation, <a href="https://github.com/radare/radeco">decompilation</a>, analysis, …</p>
+
+<p>Now that we know that we can emulate the sample, the next step is to guess
+where is the end of the packer, to dump the shellcode. Unfortunately, the
+encoder is polymorphic, its blocks are permuted and registers are dynamically
+selected.</p>
+
+<p>If you take a look at its <a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/encoders/x86/shikata_ga_nai.rb">source-code</a>, you can see that the last instruction will always be <code>loop</code>, so we can
+emulate the sample until the last <code>loop</code> instruction, and then dump from here
+to get the shellcode in clear.</p>
+
+<p>Thanks to <code>r2pipe</code>, you can script radare2 with almost every popular language:</p>
+
+<ul>
+<li><code>pip install r2pipe</code> for Python</li>
+<li><code>gem install r2pipe</code> for ruby</li>
+<li><code>npm install r2pipe</code> for nodejs</li>
+<li>…</li>
+</ul>
+
+<p>But there is an issue: ESIL doesn&rsquo;t support <a href="https://en.wikipedia.org/wiki/Floating-point_unit">FPU</a>
+instructions (yet), and <code>fnstenv</code> is <a href="http://gynvael.coldwind.pl/n/eip_from_fpu_x86">used to get EIP</a>
+(you should really read this article by the way).
+Fortunately, this is the only use of FPU instruction by this encoder, so it&rsquo;s
+trivial to emulated them by cheating.</p>
+
+<p>We should make sure that radare2 is detecting every possible FPU opcode used as
+FPU ones:</p>
+
+<pre><code class="language-python">import r2pipe
+import sys
+
+opcodes = [
+'d9d0', 'd9e1', 'd9f6', 'd9f7', 'd9e5', 'd9e8', 'd9e9', 'd9ea', 'd9eb', 'd9ec',
+'d9ed', 'd9c0', 'd9c1', 'd9c2', 'd9c3', 'd9c4', 'd9c5', 'd9c6', 'd9c7', 'd9c8',
+'d9c9', 'd9ca', 'd9cb', 'd9cc', 'd9cd', 'd9ce', 'dac0', 'dac1', 'dac2', 'dac3',
+'dac4', 'dac5', 'dac6', 'dac7', 'dac8', 'dac9', 'daca', 'dacb', 'dacc', 'dacd',
+'dace', 'dacf', 'dad0', 'dad1', 'dad2', 'dad3', 'dad4', 'dad5', 'dad6', 'dad7',
+'dad8', 'dad9', 'dada', 'dadb', 'dadc', 'dadd', 'dade', 'dbc0', 'dbc1', 'dbc2',
+'dbc3', 'dbc4', 'dbc5', 'dbc6', 'dbc7', 'dbc8', 'dbc9', 'dbca', 'dbcb', 'dbcc',
+'dbcd', 'dbce', 'dbcf', 'dbd0', 'dbd1', 'dbd2', 'dbd3', 'dbd4', 'dbd5', 'dbd6',
+'dbd7', 'dbd8', 'dbd9', 'dbda', 'dbdb', 'dbdc', 'dbdd', 'dbde', 'ddc0', 'ddc1',
+'ddc2', 'ddc3', 'ddc4', 'ddc5', 'ddc6'
+]
+
+r = r2pipe.open('-')
+
+
+for op in opcodes:
+    family = r.cmdj('abj %s' % op)[0]['family']
+    if family != 'fpu':
+        print 'NOT FPU: %s' % op
+        sys.exit(0)
+print 'End of the loop, every opcode was detected as FPU.'
+</code></pre>
+
+<p>If you launch this script with the latest version of radare2 installed on your
+machine, you&rsquo;ll see that radare2 detects every opcode as FPU ; so far so good.
+Feel free to add some dummy opcodes to see the detection fail by the way ;)</p>
+
+<p>So now it&rsquo;s time to actually unpack shikata-ga-nai, for real. The plan is to:</p>
+
+<ol>
+<li>Initialize the ESIL vm</li>
+<li>If the instruction <code>invalid</code>:
+
+<ol>
+<li>We&rsquo;re at the end of the shellcode!</li>
+<li>Dump from the last encountered <code>loop</code> instruction to the end</li>
+<li>Exit</li>
+</ol></li>
+<li>Else, if the instruction is a <code>fpu</code> one:
+
+<ol>
+<li>If it&rsquo;s <code>fnstenv</code>, write the previously stored <code>eip</code> at <code>esp</code>.</li>
+<li>Else, store <code>eip</code></li>
+<li>Goto 1</li>
+</ol></li>
+<li>Else, if the instruction is <code>loop</code>, store its location</li>
+<li>Emulate the current instruction</li>
+<li>Goto 1</li>
+</ol>
+
+<p>This is the implementation in Python:</p>
+
+<pre><code class="language-python">import sys
+import r2pipe
+
+def initESIL():
+    r.cmd('e io.cache=true')  # we're not really going to write anything anywhere
+    r.cmd('e asm.bits=32')  # the shellcode is 32b
+    r.cmd('e asm.arch=x86')
+    r.cmd('aei')  # initialize the ESIL VM
+    r.cmd('aeim 0xffffd000 0x2000 stack')
+    r.cmd('.ar*')  # set all registers to zero
+    r.cmd('aer esp=0xffffd000')
+    r.cmd('aer ebp=0xffffd000')
+
+def dump (start):
+    end = r.cmdj('oj')[0]['size']  # size of the opened object
+
+    print(r.cmd('pD %d @ %d' % (end-start, start)))  # disassembly
+
+    raw = r.cmdj('p8j %d @ %d' % (end-start, start))  # dump
+    with open('out', 'w') as f:
+        f.write(''.join(map(chr, raw)))
+
+
+def decode(r):
+    lastfpu = 0
+    lastloop = 0
+
+    for i in range(100000):
+        current_op = r.cmdj('pdj 1 @ eip')[0]
+
+        # End of shellcode or invalid opcode
+        if current_op['type'] == 'invalid':
+            dump(lastloop)
+            return
+
+        # ESIL doesn't implement FPU (yet),
+        # but we don't care, since they are only used
+        # to get EIP with the FNSTENV technique
+        # (http://gynvael.coldwind.pl/n/eip_from_fpu_x86).
+        #
+        # So we take note of the offset of the latest FPU instruction,
+        # on put it in `esp` when `fnstenv` is encounted.
+        if current_op['family'] == 'fpu':
+            if current_op['opcode'].startswith('fnstenv'):
+                r.cmd('wv %d @ esp' % lastfpu)
+            else:
+                lastfpu = current_op['offset']
+
+        # Check for end of loop opcodes
+        if current_op['opcode'].startswith('loop') and r.cmdj('arj')['ecx'] &lt;= 1:
+            lastloop = current_op['offset'] + current_op['size'];
+
+        r.cmd('aes')
+
+    print('[-] We emulated %d instructions, giving up' % i)
+
+
+if len(sys.argv) != 2:
+    print('[*] Usage: %s sample' % sys.argv[0])
+    sys.exit(0)
+
+r = r2pipe.open(sys.argv[1])
+r.cmd('e asm.comments=false');
+r.cmd('e asm.lines=false');
+r.cmd('e asm.flags=false');
+initESIL()
+decode(r)
+</code></pre>
+
+<p>By the way, if you like this kind of writeup, feel free to take a look at
+<a href="https://dustri.org/b/">jvoisin</a>&rsquo;s blog for more.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

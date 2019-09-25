@@ -1,1 +1,370 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/analysis-by-default/</title><link rel="canonical" href="https://radare.today/posts/analysis-by-default/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/analysis-by-default/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Analysis By Default</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Analysis By Default" />
+<meta property="og:description" content="Analysis By Default Many people that starts using radare2 complain about having a different workflow than other similar tools like IDA or Hopper.
+Probably the most annoying part for them is that it doesn&rsquo;t run the analysis at startup. And this is the reason why I&rsquo;m writing this blog post right now : to avoid having to explain why, again and again :)
+To begin with, r2 is a pretty broad tool." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/analysis-by-default/" />
+<meta property="article:published_time" content="2015-11-25T12:47:13+02:00" />
+<meta property="article:modified_time" content="2015-11-25T12:47:13+02:00" />
+<meta itemprop="name" content="Analysis By Default">
+<meta itemprop="description" content="Analysis By Default Many people that starts using radare2 complain about having a different workflow than other similar tools like IDA or Hopper.
+Probably the most annoying part for them is that it doesn&rsquo;t run the analysis at startup. And this is the reason why I&rsquo;m writing this blog post right now : to avoid having to explain why, again and again :)
+To begin with, r2 is a pretty broad tool.">
+
+
+<meta itemprop="datePublished" content="2015-11-25T12:47:13&#43;02:00" />
+<meta itemprop="dateModified" content="2015-11-25T12:47:13&#43;02:00" />
+<meta itemprop="wordCount" content="1554">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Analysis By Default"/>
+<meta name="twitter:description" content="Analysis By Default Many people that starts using radare2 complain about having a different workflow than other similar tools like IDA or Hopper.
+Probably the most annoying part for them is that it doesn&rsquo;t run the analysis at startup. And this is the reason why I&rsquo;m writing this blog post right now : to avoid having to explain why, again and again :)
+To begin with, r2 is a pretty broad tool."/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Analysis By Default</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2015-11-25T12:47:13&#43;02:00">November 25, 2015</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<h1 id="analysis-by-default">Analysis By Default</h1>
+
+<p>Many people that starts using radare2 complain about having a different
+workflow than other similar tools like IDA or Hopper.</p>
+
+<p>Probably the most annoying part for them is that it doesn&rsquo;t run the analysis at
+startup.  And this is the reason why I&rsquo;m writing this blog post right now : to
+avoid having to explain why, again and again :)</p>
+
+<p>To begin with, r2 is a pretty broad tool. It didn&rsquo;t even started as a
+disassembler in mind, so for example, code analysis doesn&rsquo;t makes sense to be
+done when you load a hard disk image or a memory dump for example. But some
+others will complain that we can just run the analysis when the file format is
+known to contain code.</p>
+
+<p>But then, several other reasons appear in the scene. Let&rsquo;s enumerate them:</p>
+
+<h2 id="slow-process">Slow process</h2>
+
+<p>Code analysis is not a quick operation, and not even predictable or taking a
+linear time to be processed. This makes starting times pretty heavy, compared
+to just loading the headers and strings information like it&rsquo;s done by default.</p>
+
+<p>People that are used to IDA or Hopper just load the binary, go out to make a
+coffee and then when the analysis is done, they start doing the manual analysis
+to understand what the program is doing. It&rsquo;s true that those tools perform the
+analysis in background, and the GUI is not blocked. But this takes a lot of CPU
+time, and r2 aims to run in many more platforms than just high-end desktop
+computers, for example a <a href="http://radare.today/posts/radare-0-9-9/">mazda car</a></p>
+
+<p>Radare2 can also load the binary information in background, and perform there&rsquo;s
+some initial work to do code analysis in async and threaded mode, but this is
+just not an excuse for running a heavy operation by default on start.</p>
+
+<p>If speed really matters for your task, and you have already a script that puts
+all the information you need on top of the binary you can just run <code>r2 -n</code> to
+avoid parsing the file headers and strings, loading the binary as a plain raw
+dump, without virtual mappings or flags at all.</p>
+
+<h2 id="perfection">Perfection</h2>
+
+<p>In the world of static code analysis tools, perfection doesn&rsquo;t exist. This is
+somehow a pretty complex topic that depends on the target architecture, file
+format, &hellip;</p>
+
+<p>In our case. radare2 is able to load many more file formats than any other tool
+in the market and as long as fuzzing is part of our development model, we are
+able to load pretty messed up files in a flawless way, while others are simply
+crashing. This turns out to create some side effects in the code analysis,
+by forcing it to walk into strange and invalid code paths when it is never going
+to be executed in a real environment.</p>
+
+<p>Also, r2 has a single analysis engine (which can be changed or extended by
+plugins), this contrasts with other tools that just have a specific dedicated
+engine for each architecture, which is probably better for very specific use
+cases, but probably not good when you are out of the scope of their supposed
+use cases.</p>
+
+<p>Also, bear in mind that switch tables are not always easy to resolve
+statically, most tools just expect those constructions to be standard building
+blocks spitted by compilers, but it can be different. Many times, you will
+always need some manual interaction with the tool to get full and proper
+analysis of our binary.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>As described in the previous section, analysis is not an exact science, so it
+needs some manual tuning in order to optimize the results depending on the
+target. Yeah, I know, malware is probably one of the main sources that requires
+this kind of options to be defined.</p>
+
+<p>In r2, we have 26 different <code>anal.</code> configuration variables that can be used to
+change the behaviour of the analysis engine. Probably the most interesting ones
+are the following:</p>
+
+<ul>
+<li><code>anal.afterjmp</code></li>
+<li><code>anal.depth</code></li>
+<li><code>anal.eobjmp</code></li>
+<li><code>anal.esil</code></li>
+<li><code>anal.hasnext</code></li>
+<li><code>anal.nopskip</code></li>
+</ul>
+
+<p>See the <code>e??anal.</code> command to get some detailed descriptions for them.</p>
+
+<p>There&rsquo;s even two more handy configuration variables (<code>anal.from</code> and <code>anal.to</code>)
+that allows you to restrict the boundaries of the analysis. This way you can
+for example focus on analyzing only the application code in a statically
+compiled binary by excluding the library code, which is usually at the end
+of the program, this can be easily detected by manually reading the
+disassembly.</p>
+
+<h2 id="types">Types</h2>
+
+<p>Running the analysis in radare2, is not just a single step or action. We have
+many different commands that perform different kind of analysis and let you
+identify new functions and references in faster or funky ways, which are
+handier in different situations. Let&rsquo;s just enumerate some of them:</p>
+
+<ul>
+<li>Find functions by prelude instructions (<code>aap</code>)</li>
+<li>Identify functions by following calls (<code>aac</code>)</li>
+<li>Detect jump tables and pointers to code section (<code>/V</code>)</li>
+<li>Analyze opcode absolute and relative references (<code>aar</code>)</li>
+<li>Find code/data/string references to a specific address (<code>/r</code>)</li>
+<li>Emulate code to identify new pointer references (<code>aae</code>)</li>
+<li>Use binary header information to find public functions (<code>aas</code>)</li>
+<li>Assume functions are consecutive (<code>aat</code>)</li>
+<li>&hellip;</li>
+</ul>
+
+<p>radare2 is not a click-and-run program, it&rsquo;s a set of orthogonal tools and
+commands that allows you to understand, analyze, manipulate and play with a
+large list of binary types. And as long as every single point in the above
+list will take some time, you probably do not want to run them all in a shot,
+also, the execution order will alter the results. Only experience and
+understanding will give you control on what you are doing.</p>
+
+<h2 id="delegated-analysis">Delegated Analysis</h2>
+
+<p>Another good point towards this model relays on the fact that r2 can be easily
+sandboxed or run in many different environments. This allows to distribute the
+analysis into different environments, which are in a clean state and cannot
+leak any information from your system or other binaries analyzed in case of
+loading a binary that exploits some kind of vulnerability.</p>
+
+<p>As said in other points. The entire analysis information can be serialized in
+textual form, which can be passed between different machines or centralized in
+a database like <a href="https://github.com/fabsx00/bjoern-radare">bjoern</a>, for a
+deeper understanding of the program.</p>
+
+<p>Anyway, if you are using r2 from git, you can always build with <a href="http://clang.llvm.org/docs/AddressSanitizer.html">ASAN</a>, and other compiler
+protections that are not viable options on precompiled closed source
+alternatives that will not be able to protect you in those situations.</p>
+
+<p>Crash reports in r2land are taking very little time to be fixed, and including
+fuzzing in the development process, as well as using <a href="http://clang-analyzer.llvm.org/">clang-analyzer</a>, <a href="https://www.coverity.com/">coverity</a> and
+run the entire <a href="https://github.com/radare/radare2-regressions">testsuite</a>
+with <a href="http://valgrind.org/">valgrind</a> and ASAN gives you some more
+reliability in the code you are going to run. (yes, I don&rsquo;t even trust system
+libmagic, libc&rsquo;s regex library or so, that&rsquo;s why r2 comes with our own specific
+versions of them).</p>
+
+<h2 id="use-cases">Use Cases</h2>
+
+<p>Not every time you load a binary you need or want an entire code analysis of
+it. Let&rsquo;s say, for example, that you have already performed a previous analysis
+and you have a project database stored somewhere and you just want to load it
+into this binary.</p>
+
+<p>Radare2 allows you to do this, but not only this, because, as long as projects
+are text files, you can rebase all the symbols in case the binary shifted the
+symbols to a new address, etc&hellip;</p>
+
+<p>Also, it supports signatures, so you can just find function entrypoints by
+loading a signatures files which can be generated by radare2 or IDA (<a href="https://www.hex-rays.com/products/ida/tech/flirt/index.shtml">FLIRT</a>). In this case
+you will probably not need to analyze the entire binary to understand what it
+is doing.</p>
+
+<p>If you are going to do some automated process in a binary as fast as possible,
+you&rsquo;d like to load only parts of the binary you&rsquo;re interested in,
+and do only the steps you want to perform your actions, nothing else.</p>
+
+<p>In other words: 90% of the time you are going to analyze a binary, it&rsquo;s to find
+references to some imports or strings, read the code of the function, maybe
+analyze 2 or 3 functions and go away. You don&rsquo;t need full code analysis for
+forensics, or exploiting, or binary patching, and for reverse engineering,
+you&rsquo;ll probably focus on one or two specific problems which doesn&rsquo;t require a
+complete program analysis, neither for extracting information of a binary.</p>
+
+<p>The only reasons for doing a full code analysis are similar to the ones for
+decompilation, which is to recover lost source code, <a href="https://en.wikipedia.org/wiki/Source-to-source_compiler">transpile</a> the program to
+another architecture or operating system, rebasing it, etc. I would say that
+those cases are less than 10% of what most people need.</p>
+
+<h2 id="final-words">Final Words</h2>
+
+<p>If you are used to this old-fashioned, lazy workflow, you will probably not switch to radare2 as your main tool.</p>
+
+<p>Worst care, you always just load r2 with the <code>-A</code> flag to get some default
+analysis done at start time, or just <code>echo aa &gt; ~/.config/radare2/radare2rc</code>.
+But again, this will probably be a loss of time if you are an experienced reverse engineer.</p>
+
+<p>We are not closing the door to perform a full analysis of the binary, but I
+just think that it&rsquo;s something that shouldn&rsquo;t be done by default at startup
+time.</p>
+
+<p>We enforce users to think about their workflows in order to better understand the
+problem they are facing and solve it in an optimal way, saving cpu, memory and
+why not: cats.</p>
+
+<p>Have phun!</p>
+
+<p>&ndash;pancake</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

@@ -1,1 +1,224 @@
-<!DOCTYPE html><html><head><title>https://radare.today/posts/update-from-the-gsoc/</title><link rel="canonical" href="https://radare.today/posts/update-from-the-gsoc/"/><meta name="robots" content="noindex"><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://radare.today/posts/update-from-the-gsoc/" /></head></html>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>The Official Radare Blog  | Update From the GSoC</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.58.3" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="/dist/css/app.d98f2eb6bcd1eaedb7edf166bd16af26.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+    
+
+    
+
+    <meta property="og:title" content="Update From the GSoC" />
+<meta property="og:description" content="As you know, we have 2 students working on r2 for the Google Summer of Code!
+As we&rsquo;re 3 weeks into the Summer, here&rsquo;s what one of our student, sushant94 has to say about what he&rsquo;s been working on!
+It&rsquo;s been three weeks into GSoC and I&rsquo;m having an amazing time. I am working along side dkreuter and been learning tons from him too!
+Here is the repository where you can track our progress and also give us suggestions :)" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://radare.today/posts/update-from-the-gsoc/" />
+<meta property="article:published_time" content="2015-06-15T21:36:21+02:00" />
+<meta property="article:modified_time" content="2015-06-15T21:36:21+02:00" />
+<meta itemprop="name" content="Update From the GSoC">
+<meta itemprop="description" content="As you know, we have 2 students working on r2 for the Google Summer of Code!
+As we&rsquo;re 3 weeks into the Summer, here&rsquo;s what one of our student, sushant94 has to say about what he&rsquo;s been working on!
+It&rsquo;s been three weeks into GSoC and I&rsquo;m having an amazing time. I am working along side dkreuter and been learning tons from him too!
+Here is the repository where you can track our progress and also give us suggestions :)">
+
+
+<meta itemprop="datePublished" content="2015-06-15T21:36:21&#43;02:00" />
+<meta itemprop="dateModified" content="2015-06-15T21:36:21&#43;02:00" />
+<meta itemprop="wordCount" content="568">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Update From the GSoC"/>
+<meta name="twitter:description" content="As you know, we have 2 students working on r2 for the Google Summer of Code!
+As we&rsquo;re 3 weeks into the Summer, here&rsquo;s what one of our student, sushant94 has to say about what he&rsquo;s been working on!
+It&rsquo;s been three weeks into GSoC and I&rsquo;m having an amazing time. I am working along side dkreuter and been learning tons from him too!
+Here is the repository where you can track our progress and also give us suggestions :)"/>
+
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://radare.today" class="f3 fw2 hover-white no-underline white-90 dib">
+      The Official Radare Blog
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+
+    <header class="mt4 w-100">
+      <p class="f6 b helvetica tracked">
+          
+        POSTS
+      </p>
+      <h1 class="f1 athelas mb1">Update From the GSoC</h1>
+      
+      <time class="f6 mv4 dib tracked" datetime="2015-06-15T21:36:21&#43;02:00">June 15, 2015</time>
+      
+      
+    </header>
+
+    <section class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
+
+<p>As you know, we have 2 students working on r2 for the <a href="https://developers.google.com/open-source/soc/">Google Summer of Code</a>!</p>
+
+<p>As we&rsquo;re 3 weeks into the Summer, here&rsquo;s what one of our student, <a href="https://github.com/sushant94">sushant94</a> has to say about what he&rsquo;s been working on!</p>
+
+<p><img src="/images/gsoc2015-300x270.jpg" alt="GSoC logo" /></p>
+
+<p>It&rsquo;s been three weeks into GSoC and I&rsquo;m having an amazing time. I am working along side <a href="https://twitter.com/dkreuter_">dkreuter</a> and been learning tons from him too!</p>
+
+<p><a href="https://github.com/radare/radeco">Here</a> is the repository where you can track our progress and also give us suggestions :)</p>
+
+<p>We chose <a href="http://www.rust-lang.org/">Rust</a> as our language for implementation. Though at first I was a bit scared of this choice, I quickly realized how great the language is! Rust has allowed be to far more productive, after of course my initial battles with the borrow checker.</p>
+
+<p>The zero-cost abstractions allowed by Rust has been a great so far!</p>
+
+<p>This is a quick roundup of what I&rsquo;ve been upto:</p>
+
+<ul>
+<li>Firstly, I got an <a href="https://github.com/radare/radare2/wiki/ESIL">ESIL</a> parser up and running. We use this parser to convert to an <a href="https://en.wikipedia.org/wiki/Intermediate_language">IR</a> which is easier to perform static analysis on. While the ESIL is amazing for emulation purposes, it&rsquo;s not so much for static analysis as it has a very large number of supported opcodes. The <em>RadecoIR</em> (name subject to change) is much more simplified in terms of the number of opcodes. Also, ESIL is primarily just strings (as suggested by its name &ldquo;Evaluable Strings Intermediate Language&rdquo;) which could be pretty hard to work with.</li>
+<li>The next step was to build a Control Flow Graph (<a href="https://en.wikipedia.org/wiki/Control_flow_graph">CFG</a>) out of the IR. Building a control flow graph will allow us to reason about the way the control flows in the program, and hence, helps us better understand the different programming constructs that go into making it. To make debugging and visualizations easier, I first went ahead and implemented a <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">dot</a> format emitter (ok, I admit it, I probably did this first as I felt it was more fun :P). Just a brief word about dot, dot is a graph description language which can be used an input to <a href="http://www.graphviz.org/">graphviz</a> to obtain visual representations of a graph. The current implementation is just a minimal dot format emitter and all the features of dot format are not fully supported. At this point, it still cannot be used on any generic graphs. I plan to expand this in the future to allow more features and work on generic graphs.</li>
+<li>The last part was making the CFG out of the emitted RadecoIR. This turned out to be pretty simple, however, there are still a ton of improvements to be made here :)</li>
+</ul>
+
+<p>Apart from Radeco itself, I also helped in making <a href="https://crates.io/crates/r2pipe">r2pipe.rs</a> which allows communication with radare2 over pipes. In the future, r2pipe.rs will be used to connect Radeco to radare2. R2Pipe.rs is great news if you&rsquo;re a rust person as you can now interact with radare2 and extend it to meet your needs!</p>
+
+<p>Check out the <a href="http://radare.github.io/r2pipe.rs/">documentation</a> if you&rsquo;re interested :)</p>
+
+<p>This is just a glimpse of what&rsquo;s in for the upcoming weeks:</p>
+
+<ul>
+<li>Integration with radare2.</li>
+<li>Write tests and documentation for all features. The limited documentation we currently have can be found <a href="http://radare.github.io/radeco">here</a>. This will be updated soon.</li>
+<li>Convert the IR into the <a href="https://en.wikipedia.org/wiki/Static_single_assignment_form">SSA</a> form.</li>
+<li>Write <a href="https://en.wikipedia.org/wiki/Data-flow_analysis">dataflow analysis</a> on the SSA form and also perform optimizations like:
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Dead_code_elimination">Dead code elimination</a>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Constant_folding">Constant folding</a>.</li>
+<li><a href="https://en.wikipedia.org/?title=Constant_folding">Type propagation</a>.</li>
+</ul></li>
+</ul>
+
+<h3 id="bonus">Bonus:</h3>
+
+<p>Here is a small example of the CFG graph that we&rsquo;re currently about to generate</p>
+
+<p><img src="https://raw.githubusercontent.com/sushant94/sushant94.github.io/master/images/cfg.png" alt="cfg" /></p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6">
+      
+      
+      </div>
+    </section>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://radare.today" >
+    &copy; 2019 The Official Radare Blog
+  </a>
+    <div>
+
+
+
+<a href="radareorg" target="_blank" class="link-transition twitter link dib z-999 pt3 pt0-l mr1" title="Twitter link" rel="noopener" aria-label="follow on Twitter——Opens in a new window">
+  <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>
